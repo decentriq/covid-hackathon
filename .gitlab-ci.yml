@@ -6,7 +6,7 @@ stages:
 
 before_script:
   - apt-get update
-  - apt-get install -y libclang-3.9-dev libspeechd-dev
+  - apt-get install -y libclang-3.9-dev libspatialite-dev
   - export CPATH=/usr/lib/llvm-3.9/lib/clang/3.9.1/include/
 
 test:
