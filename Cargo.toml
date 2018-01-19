@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Nolan Darilek <nolan@thewordnerd.info>"]
 repository = "https://gitlab.com/ndarilek/spatialite-sys"
 description = "Low-level bindings to the SpatiaLite SQLite geospatial extension"
-license = "(MPL-1.1 OR GPL-2.0 OR LGPL-2.1)"
+license = "MPL-1.1/GPL-2.0/LGPL-2.1"
 
 [badges]
 gitlab = {repository = "ndarilek/spatialite-sys"}
