@@ -4,16 +4,24 @@ use std::process::Command;
 
 fn compile() {
     let out_dir = env::var("OUT_DIR").unwrap();
-    autotools::build("vendor/proj-5.2.0");
+    let dir = "vendor/proj-5.2.0";
+    Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
+    autotools::build(dir);
     println!("cargo:rustc-link-lib=static=proj");
-    autotools::Config::new("vendor/geos-3.7.1")
+    let dir = "vendor/geos-3.7.1";
+    Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
+    autotools::Config::new(dir)
         .cflag(format!("-I {}/include", out_dir))
         .ldflag(format!("-L{}/lib", out_dir))
         .build();
     println!("cargo:rustc-link-lib=static=geos");
-    autotools::build("vendor/freexl-1.0.5");
+    let dir = "vendor/freexl-1.0.5";
+    Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
+    autotools::build(dir);
     println!("cargo:rustc-link-lib=static=freexl");
-    let config = autotools::Config::new("vendor/libspatialite-4.3.0a")
+    let dir = "vendor/libspatialite-4.3.0a";
+    Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
+    let config = autotools::Config::new(dir)
         .cflag(format!("-I {}/include", out_dir))
         .ldflag(format!("-L{}/lib", out_dir))
         .with("-geosconfig", Some(&format!("{}/bin/geos-config", out_dir)))
