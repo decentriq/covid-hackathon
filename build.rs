@@ -3,7 +3,7 @@ use std::path::Path;
 use std::process::Command;
 
 fn compile() {
-    println!("cargo:rustc-link-lib=dynamic=z");
+    println!("cargo:rustc-link-lib=dylib=z");
     let out_dir = env::var("OUT_DIR").unwrap();
     let dir = "vendor/proj-5.2.0";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
