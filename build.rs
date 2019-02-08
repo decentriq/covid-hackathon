@@ -15,6 +15,7 @@ fn compile() {
         .ldflag(format!("-L{}/lib", out_dir))
         .build();
     println!("cargo:rustc-link-lib=static=geos");
+    println!("cargo:rustc-link-lib=static=geos_c");
     let dir = "vendor/freexl-1.0.5";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
     autotools::build(dir);
