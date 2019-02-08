@@ -8,9 +8,6 @@ repository = "https://gitlab.com/ndarilek/spatialite-sys"
 description = "Low-level bindings to the SpatiaLite SQLite geospatial extension"
 license = "MPL-1.1/GPL-2.0/LGPL-2.1"
 
-[lib]
-crate-type = ["staticlib"]
-
 [badges]
 gitlab = {repository = "ndarilek/spatialite-sys"}
 
