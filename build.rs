@@ -33,7 +33,7 @@ fn compile() {
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
     Config::new(dir)
         .cflag(format!("-I {}/include -fPIC", out_dir))
-        .ldflag(format!("-L{}/lib -static-libstdc++ -static-libgcc", out_dir))
+        .ldflag(format!("-L{}/lib", out_dir))
         .with("-geosconfig", Some(&format!("{}/bin/geos-config", out_dir)))
         .disable("-libxml2", None)
         .build();
