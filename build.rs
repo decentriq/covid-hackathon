@@ -2,16 +2,21 @@ use std::env;
 use std::path::Path;
 use std::process::Command;
 
+use autotools::Config;
+
 fn compile() {
     println!("cargo:rustc-link-lib=z");
     let out_dir = env::var("OUT_DIR").unwrap();
     let dir = "vendor/proj-5.2.0";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
-    autotools::build(dir);
+    Config::new(dir)
+        .disable_static().enable_shared()
+        .build();
     println!("cargo:rustc-link-lib=proj");
     let dir = "vendor/geos-3.7.1";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
-    autotools::Config::new(dir)
+    Config::new(dir)
+        .disable_static().enable_shared()
         .cflag(format!("-I {}/include", out_dir))
         .ldflag(format!("-L{}/lib", out_dir))
         .build();
@@ -19,17 +24,20 @@ fn compile() {
     println!("cargo:rustc-link-lib=geos_c");
     let dir = "vendor/freexl-1.0.5";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
-    autotools::build(dir);
+    Config::new(dir)
+        .disable_static().enable_shared()
+        .build();
     println!("cargo:rustc-link-lib=freexl");
     let dir = "vendor/libspatialite-4.3.0a";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
-    let config = autotools::Config::new(dir)
+    Config::new(dir)
+        .disable_static().enable_shared()
         .cflag(format!("-I {}/include", out_dir))
         .ldflag(format!("-L{}/lib", out_dir))
         .with("-geosconfig", Some(&format!("{}/bin/geos-config", out_dir)))
         .disable("-libxml2", None)
         .build();
-    println!("cargo:rustc-link-search=native={}/lib", config.display());
+    println!("cargo:rustc-link-search=native={}/lib", out_dir);
     println!("cargo:rustc-link-lib=spatialite");
     let target  = env::var("TARGET").unwrap();
     if target.contains("apple") {
