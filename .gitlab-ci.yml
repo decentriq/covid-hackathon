@@ -7,7 +7,6 @@ stages:
 before_script:
   - apt-get update
   - apt-get install -y clang libclang-dev autoconf automake libtool
-  # - export CPATH=/usr/lib/llvm-3.9/lib/clang/3.9.1/include/
 
 test:
   stage: test
@@ -18,7 +17,7 @@ publish:
   stage: publish
   script:
   - cargo login $CARGO_TOKEN
-  - cargo package
-  - cargo publish
+  - cargo package --no-verify
+  - cargo publish --no-verify
   only:
   - tags
