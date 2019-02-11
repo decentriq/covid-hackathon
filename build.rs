@@ -10,35 +10,35 @@ fn compile() {
     let dir = "vendor/proj-5.2.0";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
     Config::new(dir)
-        .disable_static().enable_shared()
+        .cflag("-fPIC")
         .build();
-    println!("cargo:rustc-link-lib=proj");
+    println!("cargo:rustc-link-lib=static=proj");
     let dir = "vendor/geos-3.7.1";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
     Config::new(dir)
-        .disable_static().enable_shared()
-        .cflag(format!("-I {}/include", out_dir))
+        .enable_shared()
+        .cflag(format!("-I {}/include -fPIC", out_dir))
+        .cxxflag("-fPIC")
         .ldflag(format!("-L{}/lib", out_dir))
         .build();
-    println!("cargo:rustc-link-lib=geos");
-    println!("cargo:rustc-link-lib=geos_c");
+    println!("cargo:rustc-link-lib=static=geos");
+    println!("cargo:rustc-link-lib=static=geos_c");
     let dir = "vendor/freexl-1.0.5";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
     Config::new(dir)
-        .disable_static().enable_shared()
+        .cflag("-fPIC")
         .build();
-    println!("cargo:rustc-link-lib=freexl");
+    println!("cargo:rustc-link-lib=static=freexl");
     let dir = "vendor/libspatialite-4.3.0a";
     Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
     Config::new(dir)
-        .disable_static().enable_shared()
-        .cflag(format!("-I {}/include", out_dir))
-        .ldflag(format!("-L{}/lib", out_dir))
+        .cflag(format!("-I {}/include -fPIC", out_dir))
+        .ldflag(format!("-L{}/lib -static-libstdc++ -static-libgcc", out_dir))
         .with("-geosconfig", Some(&format!("{}/bin/geos-config", out_dir)))
         .disable("-libxml2", None)
         .build();
     println!("cargo:rustc-link-search={}/lib", out_dir);
-    println!("cargo:rustc-link-lib=spatialite");
+    println!("cargo:rustc-link-lib=static=spatialite");
     let target  = env::var("TARGET").unwrap();
     if target.contains("apple") {
         println!("cargo:rustc-link-lib=dylib=c++");
