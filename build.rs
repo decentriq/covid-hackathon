@@ -37,7 +37,7 @@ fn compile() {
         .with("-geosconfig", Some(&format!("{}/bin/geos-config", out_dir)))
         .disable("-libxml2", None)
         .build();
-    println!("cargo:rustc-link-search=native={}/lib", out_dir);
+    println!("cargo:rustc-link-search={}/lib", out_dir);
     println!("cargo:rustc-link-lib=spatialite");
     let target  = env::var("TARGET").unwrap();
     if target.contains("apple") {
