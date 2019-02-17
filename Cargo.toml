@@ -12,6 +12,6 @@ license = "MPL-1.1/GPL-2.0/LGPL-2.1"
 gitlab = {repository = "ndarilek/spatialite-sys"}
 
 [build-dependencies]
-autotools = "0.1"
+autotools = { path = "../../src/autotools-rs" }
 bindgen = "0.47"
 pkg-config = "0.3"

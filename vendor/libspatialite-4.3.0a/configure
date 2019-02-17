@@ -18763,6 +18763,12 @@ done
   # Ensure we can link against libgeos_c
   LIBS_SAVE="$LIBS"
   LIBS="$GEOS_LDFLAGS"
+  ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing GEOSCoveredBy" >&5
 $as_echo_n "checking for library containing GEOSCoveredBy... " >&6; }
 if ${ac_cv_search_GEOSCoveredBy+:} false; then :
@@ -18792,9 +18798,9 @@ for ac_lib in '' geos_c; do
     ac_res="none required"
   else
     ac_res=-l$ac_lib
-    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+    LIBS="-l$ac_lib -lgeos $ac_func_search_save_LIBS"
   fi
-  if ac_fn_c_try_link "$LINENO"; then :
+  if ac_fn_cxx_try_link "$LINENO"; then :
   ac_cv_search_GEOSCoveredBy=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
@@ -18820,6 +18826,12 @@ if test "$ac_res" != no; then :
 else
   as_fn_error $? "could not find libgeos_c (or obsolete 'libgeos_c' < v.3.3.0 found) - you may need to specify the directory of a geos-config file using --with-geosconfig" "$LINENO" 5
 fi
+
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
   LIBS="$LIBS_SAVE"
   LIBS="$LIBS $GEOS_LDFLAGS -lgeos_c"
@@ -18850,6 +18862,12 @@ else
 fi
 
   if test x"$enable_geosadvanced" != "xno"; then
+	  ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
 	  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing GEOSDelaunayTriangulation" >&5
 $as_echo_n "checking for library containing GEOSDelaunayTriangulation... " >&6; }
 if ${ac_cv_search_GEOSDelaunayTriangulation+:} false; then :
@@ -18879,9 +18897,9 @@ for ac_lib in '' geos_c; do
     ac_res="none required"
   else
     ac_res=-l$ac_lib
-    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+    LIBS="-l$ac_lib -lgeos $ac_func_search_save_LIBS"
   fi
-  if ac_fn_c_try_link "$LINENO"; then :
+  if ac_fn_cxx_try_link "$LINENO"; then :
   ac_cv_search_GEOSDelaunayTriangulation=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
@@ -18907,6 +18925,12 @@ if test "$ac_res" != no; then :
 else
   as_fn_error $? "'libgeos_c' (>= v.3.4.0) is required but it doesn't seem to be installed on this system." "$LINENO" 5
 fi
+
+	  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 	  $as_echo "#define GEOS_ADVANCED 1" >>confdefs.h
 

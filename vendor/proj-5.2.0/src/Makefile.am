@@ -1,7 +1,7 @@
 AM_CFLAGS = @C_WFLAGS@
 AM_CXXFLAGS = @CXX_WFLAGS@
 
-bin_PROGRAMS =	proj nad2bin geod cs2cs gie cct
+bin_PROGRAMS =	proj geod cs2cs gie cct
 EXTRA_PROGRAMS = multistresstest test228
 
 TESTS = geodtest
@@ -20,7 +20,6 @@ EXTRA_DIST = makefile.vc proj.def bin_cct.cmake bin_gie.cmake bin_cs2cs.cmake \
 proj_SOURCES = proj.c gen_cheb.c p_series.c
 cs2cs_SOURCES = cs2cs.c gen_cheb.c p_series.c
 cct_SOURCES = cct.c proj_strtod.c proj_strtod.h optargpm.h
-nad2bin_SOURCES = nad2bin.c
 geod_SOURCES = geod.c geod_set.c geod_interface.c geod_interface.h
 
 gie_SOURCES = gie.c proj_strtod.c proj_strtod.h optargpm.h
@@ -32,8 +31,6 @@ cct_LDADD = libproj.la
 cs2cs_LDADD = libproj.la
 geod_LDADD = libproj.la
 proj_LDADD = libproj.la
-nad2bin_LDADD = libproj.la
-
 gie_LDADD = libproj.la
 multistresstest_LDADD = libproj.la @THREAD_LIB@
 test228_LDADD = libproj.la @THREAD_LIB@

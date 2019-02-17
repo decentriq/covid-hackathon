@@ -277,7 +277,9 @@ if test x"$enable_geos" != "xno"; then
   # Ensure we can link against libgeos_c
   LIBS_SAVE="$LIBS"
   LIBS="$GEOS_LDFLAGS"
-  AC_SEARCH_LIBS(GEOSCoveredBy,geos_c,,AC_MSG_ERROR([could not find libgeos_c (or obsolete 'libgeos_c' < v.3.3.0 found) - you may need to specify the directory of a geos-config file using --with-geosconfig]))
+  AC_LANG_PUSH([C++])
+  AC_SEARCH_LIBS(GEOSCoveredBy,geos_c,,AC_MSG_ERROR([could not find libgeos_c (or obsolete 'libgeos_c' < v.3.3.0 found) - you may need to specify the directory of a geos-config file using --with-geosconfig]),-lgeos)
+  AC_LANG_POP([C++])
   LIBS="$LIBS_SAVE"
   LIBS="$LIBS $GEOS_LDFLAGS -lgeos_c"
 
@@ -298,7 +300,9 @@ if test x"$enable_geos" != "xno"; then
 	  [--enable-geosadvanced], [enables GEOS advanced features [default=yes]])],
 	  [], [enable_geosadvanced=yes])
   if test x"$enable_geosadvanced" != "xno"; then
-	  AC_SEARCH_LIBS(GEOSDelaunayTriangulation,geos_c,,AC_MSG_ERROR(['libgeos_c' (>= v.3.4.0) is required but it doesn't seem to be installed on this system.]))
+	  AC_LANG_PUSH([C++])
+	  AC_SEARCH_LIBS(GEOSDelaunayTriangulation,geos_c,,AC_MSG_ERROR(['libgeos_c' (>= v.3.4.0) is required but it doesn't seem to be installed on this system.]),-lgeos)
+	  AC_LANG_POP([C++])
 	  AC_DEFINE(GEOS_ADVANCED)
   fi
 

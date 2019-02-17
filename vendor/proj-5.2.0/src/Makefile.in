@@ -90,8 +90,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = proj$(EXEEXT) nad2bin$(EXEEXT) geod$(EXEEXT) \
-	cs2cs$(EXEEXT) gie$(EXEEXT) cct$(EXEEXT)
+bin_PROGRAMS = proj$(EXEEXT) geod$(EXEEXT) cs2cs$(EXEEXT) gie$(EXEEXT) \
+	cct$(EXEEXT)
 EXTRA_PROGRAMS = multistresstest$(EXEEXT) test228$(EXEEXT)
 TESTS = geodtest$(EXEEXT)
 check_PROGRAMS = geodtest$(EXEEXT)
@@ -211,9 +211,6 @@ gie_DEPENDENCIES = libproj.la
 am_multistresstest_OBJECTS = multistresstest.$(OBJEXT)
 multistresstest_OBJECTS = $(am_multistresstest_OBJECTS)
 multistresstest_DEPENDENCIES = libproj.la
-am_nad2bin_OBJECTS = nad2bin.$(OBJEXT)
-nad2bin_OBJECTS = $(am_nad2bin_OBJECTS)
-nad2bin_DEPENDENCIES = libproj.la
 am_proj_OBJECTS = proj.$(OBJEXT) gen_cheb.$(OBJEXT) p_series.$(OBJEXT)
 proj_OBJECTS = $(am_proj_OBJECTS)
 proj_DEPENDENCIES = libproj.la
@@ -256,12 +253,10 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libproj_la_SOURCES) $(cct_SOURCES) $(cs2cs_SOURCES) \
 	$(geod_SOURCES) $(geodtest_SOURCES) $(gie_SOURCES) \
-	$(multistresstest_SOURCES) $(nad2bin_SOURCES) $(proj_SOURCES) \
-	$(test228_SOURCES)
+	$(multistresstest_SOURCES) $(proj_SOURCES) $(test228_SOURCES)
 DIST_SOURCES = $(libproj_la_SOURCES) $(cct_SOURCES) $(cs2cs_SOURCES) \
 	$(geod_SOURCES) $(geodtest_SOURCES) $(gie_SOURCES) \
-	$(multistresstest_SOURCES) $(nad2bin_SOURCES) $(proj_SOURCES) \
-	$(test228_SOURCES)
+	$(multistresstest_SOURCES) $(proj_SOURCES) $(test228_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -611,7 +606,6 @@ EXTRA_DIST = makefile.vc proj.def bin_cct.cmake bin_gie.cmake bin_cs2cs.cmake \
 proj_SOURCES = proj.c gen_cheb.c p_series.c
 cs2cs_SOURCES = cs2cs.c gen_cheb.c p_series.c
 cct_SOURCES = cct.c proj_strtod.c proj_strtod.h optargpm.h
-nad2bin_SOURCES = nad2bin.c
 geod_SOURCES = geod.c geod_set.c geod_interface.c geod_interface.h
 gie_SOURCES = gie.c proj_strtod.c proj_strtod.h optargpm.h
 multistresstest_SOURCES = multistresstest.c
@@ -621,7 +615,6 @@ cct_LDADD = libproj.la
 cs2cs_LDADD = libproj.la
 geod_LDADD = libproj.la
 proj_LDADD = libproj.la
-nad2bin_LDADD = libproj.la
 gie_LDADD = libproj.la
 multistresstest_LDADD = libproj.la @THREAD_LIB@
 test228_LDADD = libproj.la @THREAD_LIB@
@@ -846,10 +839,6 @@ multistresstest$(EXEEXT): $(multistresstest_OBJECTS) $(multistresstest_DEPENDENC
 	@rm -f multistresstest$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(multistresstest_OBJECTS) $(multistresstest_LDADD) $(LIBS)
 
-nad2bin$(EXEEXT): $(nad2bin_OBJECTS) $(nad2bin_DEPENDENCIES) $(EXTRA_nad2bin_DEPENDENCIES) 
-	@rm -f nad2bin$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(nad2bin_OBJECTS) $(nad2bin_LDADD) $(LIBS)
-
 proj$(EXEEXT): $(proj_OBJECTS) $(proj_DEPENDENCIES) $(EXTRA_proj_DEPENDENCIES) 
 	@rm -f proj$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(proj_OBJECTS) $(proj_LDADD) $(LIBS)
@@ -999,7 +988,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jniproj.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mk_cheby.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multistresstest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nad2bin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nad_cvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nad_init.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nad_intr.Plo@am__quote@

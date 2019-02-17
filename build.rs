@@ -7,45 +7,52 @@ use autotools::Config;
 fn compile() {
     println!("cargo:rustc-link-lib=z");
     let out_dir = env::var("OUT_DIR").unwrap();
-    let dir = "vendor/proj-5.2.0";
-    Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
+    let dir = "vendor/sqlite-autoconf-3270100";
     Config::new(dir)
+        .reconf("-fi")
         .cflag("-fPIC")
+        .build();
+    println!("cargo:rustc-link-lib=static=sqlite3");
+    let dir = "vendor/proj-5.2.0";
+    Config::new(dir)
+        .reconf("-fi")
+        .cflag(format!("-I {}/include -fPIC", out_dir))
+        .cxxflag(format!("-I {}/include -fPIC", out_dir))
+        .ldflag(format!("-L{}/lib", out_dir))
         .build();
     println!("cargo:rustc-link-lib=static=proj");
     let dir = "vendor/geos-3.7.1";
-    Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
     Config::new(dir)
-        .enable_shared()
+        .reconf("-fi")
         .cflag(format!("-I {}/include -fPIC", out_dir))
         .cxxflag("-fPIC")
         .ldflag(format!("-L{}/lib", out_dir))
         .build();
     println!("cargo:rustc-link-lib=static=geos");
     println!("cargo:rustc-link-lib=static=geos_c");
-    let dir = "vendor/freexl-1.0.5";
-    Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
-    Config::new(dir)
-        .cflag("-fPIC")
-        .build();
-    println!("cargo:rustc-link-lib=static=freexl");
-    let dir = "vendor/libspatialite-4.3.0a";
-    Command::new("autoreconf").arg("-fi").current_dir(dir).output().unwrap();
+    let target  = env::var("TARGET").unwrap();
+    let dir = "vendor/libiconv-1.15";
     Config::new(dir)
         .cflag(format!("-I {}/include -fPIC", out_dir))
         .ldflag(format!("-L{}/lib", out_dir))
+        .build();
+    println!("cargo:rustc-link-lib=static=iconv");
+    let dir = "vendor/libspatialite-4.3.0a";
+    Config::new(dir)
+        .reconf("-fi")
+        .disable("-examples", None)
+        .disable("-freexl", None)
+        .cflag(format!("-pthread -I {}/include -fPIC", out_dir))
+        .ldflag(format!("-L{}/lib -latomic -ldl -static-libstdc++", out_dir))
         .with("-geosconfig", Some(&format!("{}/bin/geos-config", out_dir)))
         .disable("-libxml2", None)
         .build();
     println!("cargo:rustc-link-search={}/lib", out_dir);
     println!("cargo:rustc-link-lib=static=spatialite");
-    let target  = env::var("TARGET").unwrap();
-    if target.contains("apple") {
-        println!("cargo:rustc-link-lib=dylib=c++");
-    } else if target.contains("linux") {
-        println!("cargo:rustc-link-lib=dylib=stdc++");
+    if target.contains("android") || target.contains("apple") {
+        println!("cargo:rustc-link-lib=static-nobundle=c++");
     } else {
-        unimplemented!();
+        println!("cargo:rustc-link-lib=static-nobundle=stdc++");
     }
 }
 
