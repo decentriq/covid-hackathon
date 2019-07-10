@@ -2,7 +2,7 @@
 name = "spatialite-sys"
 edition = "2018"
 links = "spatialite"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Nolan Darilek <nolan@thewordnerd.info>"]
 repository = "https://gitlab.com/ndarilek/spatialite-sys"
 description = "Low-level bindings to the SpatiaLite SQLite geospatial extension"
@@ -12,6 +12,6 @@ license = "MPL-1.1/GPL-2.0/LGPL-2.1"
 gitlab = {repository = "ndarilek/spatialite-sys"}
 
 [build-dependencies]
-autotools = { path = "../../src/autotools-rs" }
-bindgen = "0.47"
+autotools = "0.2"
+bindgen = "0.50"
 pkg-config = "0.3"
