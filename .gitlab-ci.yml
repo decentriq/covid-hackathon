@@ -7,6 +7,7 @@ stages:
 before_script:
   - apt-get update
   - apt-get install -y clang libclang-dev autoconf automake libtool
+  rustup default nightly
 
 test:
   stage: test
