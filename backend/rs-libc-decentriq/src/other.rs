@@ -37,7 +37,6 @@ use std::process;
 #[no_mangle] pub unsafe extern fn mremap() { unimplemented!() }
 #[no_mangle]
 pub unsafe extern fn strrchr(cs: *const c_char, character: c_int) -> *const c_char {
-    println!("strrchr");
     let mut found: *const c_char = ptr::null_mut();
     let c = character as u8;
     let mut i = 0;
