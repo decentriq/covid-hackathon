@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# This script wraps nix-shell and adds -I flags to pin nixpkgs. In general any build or deployment command should be submitted throught this shell.
+set -euo pipefail
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+PIN=$(cat "${SCRIPT_DIR}/nix/NIXPKGS_PIN")
+
+exec nix-shell -I nixpkgs="$PIN" -I nixos="$PIN" "${SCRIPT_DIR}/nix/cached-nix-shell.nix" --command "exec cached-nix-shell -I nixpkgs=${PIN} -I nixos=${PIN} ${SCRIPT_DIR}/nix/shell.nix $([[ -z "$@" ]] && printf '' || printf ' %q' "$@")"
