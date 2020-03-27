@@ -1,0 +1,11 @@
+[package]
+name = "rs-libc-decentriq"
+version = "0.1.0"
+authors = ["Enrico Ghirardi <enrico.ghirardi@decentriq.ch>"]
+edition = "2018"
+build = "build.rs"
+
+[dependencies]
+
+[build-dependencies]
+cc = "1.0"

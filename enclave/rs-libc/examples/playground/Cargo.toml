@@ -1,0 +1,10 @@
+[package]
+name = "playground"
+version = "0.1.0"
+authors = ["Enrico Ghirardi <enrico.ghirardi@decentriq.ch>"]
+edition = "2018"
+
+[dependencies]
+libtest-sys = { path = "libtest-sys" }
+rs-libc-decentriq = { path = "../.." }
+rs-libc = "0.2.0"
