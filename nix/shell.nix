@@ -17,11 +17,19 @@ in pkgs.mkShell {
     cmake
     cacert
     nix
+    llvmPackages.llvm
+
+    automake
+    libtool
   ];
 
   hardeningDisable = [ "fortify" ];
   RUST_BACKTRACE = "full";
   RUST_LOG = "info";
+
+  shellHook = ''
+    export LIBCLANG_PATH=${pkgs.llvmPackages.clang-unwrapped.lib}/lib
+  '';
 
   NIX_PATH = "nixpkgs=${nixpkgsPin}:nixos=${nixpkgsPin}";
 }

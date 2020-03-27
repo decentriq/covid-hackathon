@@ -1,0 +1,3 @@
+[submodule "backend/spatialite-sys"]
+	path = backend/spatialite-sys
+	url = /home/chpatrick/dev/spatialite-sys

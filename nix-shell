@@ -6,4 +6,5 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 PIN=$(cat "${SCRIPT_DIR}/nix/NIXPKGS_PIN")
 
-exec nix-shell -I nixpkgs="$PIN" -I nixos="$PIN" "${SCRIPT_DIR}/nix/cached-nix-shell.nix" --command "exec cached-nix-shell -I nixpkgs=${PIN} -I nixos=${PIN} ${SCRIPT_DIR}/nix/shell.nix $([[ -z "$@" ]] && printf '' || printf ' %q' "$@")"
+# exec nix-shell -I nixpkgs="$PIN" -I nixos="$PIN" "${SCRIPT_DIR}/nix/cached-nix-shell.nix" --command "exec cached-nix-shell -I nixpkgs=${PIN} -I nixos=${PIN} ${SCRIPT_DIR}/nix/shell.nix $([[ -z "$@" ]] && printf '' || printf ' %q' "$@")"
+exec nix-shell -I nixpkgs="$PIN" -I nixos="$PIN" ${SCRIPT_DIR}/nix/shell.nix $([[ -z "$@" ]] && printf '' || printf ' %q' "$@")
