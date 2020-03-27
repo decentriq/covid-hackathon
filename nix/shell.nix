@@ -17,6 +17,11 @@ in pkgs.mkShell {
     cmake
     cacert
     nix
+
+    zlib
+    automake
+    autoconf
+    libtool
   ];
 
   hardeningDisable = [ "fortify" ];
