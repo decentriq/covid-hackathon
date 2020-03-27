@@ -1,0 +1,32 @@
+{
+  "name": "chily-builder-tester",
+  "collaborators": [
+    "sdeml <stefandeml@gmail.com>"
+  ],
+  "version": "0.2.0",
+  "scripts": {
+    "test": "npm run build-node && mocha -r ts-node/register tests/**/*.test.ts",
+    "wasm-test": "wasm-pack  test ../ --node",
+    "build-node": "wasm-pack build ../ --out-dir js/pkg-node --target nodejs",
+    "build-bundler": "wasm-pack build ../ --out-dir js/pkg-bundler --target bundler",
+    "build": "npm run build-node && npm run build-bundler && ./unify.sh"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.1",
+    "ts-node": "^8.4.1"
+  },
+  "dependencies": {
+    "typescript": "^3.6.4"
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
