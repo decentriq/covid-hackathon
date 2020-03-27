@@ -34,6 +34,7 @@ use std::process;
 #[no_mangle] pub unsafe extern fn sysconf() { unimplemented!() }
 #[no_mangle] pub unsafe extern fn getenv() { unimplemented!() }
 #[no_mangle] pub unsafe extern fn utimes() { unimplemented!() }
+#[no_mangle] pub unsafe extern fn mremap() { unimplemented!() }
 #[no_mangle]
 pub unsafe extern fn strrchr(cs: *const c_char, character: c_int) -> *const c_char {
     println!("strrchr");

@@ -1,0 +1,12 @@
+[package]
+name = "enclave"
+version = "0.1.0"
+authors = ["Enrico Ghirardi <enrico.ghirardi@decentriq.ch>"]
+edition = "2018"
+
+[dependencies]
+time = "0.1.42"
+rs-libc-decentriq = { path = "../rs-libc-decentriq" }
+rs-libc = "0.2.0"
+rusqlite = { version = "0.21.0", features = ["bundled"] }
+

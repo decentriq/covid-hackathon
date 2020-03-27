@@ -9,6 +9,7 @@ in pkgs.mkShell {
   ];
   buildInputs = with pkgs; [
     (import packages/elf2sgxs)
+    (import packages/runner-cargo)
     (import packages/sgx-gdb)
     go
     pkgconfig
