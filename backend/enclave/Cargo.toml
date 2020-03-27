@@ -9,4 +9,4 @@ time = "0.1.42"
 rs-libc-decentriq = { path = "../rs-libc-decentriq" }
 rs-libc = "0.2.0"
 rusqlite = { version = "0.21.0", features = ["bundled"] }
-hyper = "0.10.0"
+hyper = "0.10.16"
