@@ -11,6 +11,10 @@ license = "MPL-1.1/GPL-2.0/LGPL-2.1"
 [badges]
 gitlab = {repository = "ndarilek/spatialite-sys"}
 
+[dependencies]
+rusqlite = "0.21.0"
+libsqlite3-sys = "0.17.0"
+
 [build-dependencies]
 autotools = "0.2"
 bindgen = "0.50"

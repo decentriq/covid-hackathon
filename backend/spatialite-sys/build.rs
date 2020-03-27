@@ -16,14 +16,14 @@ fn maybe_cross_compile(config: &mut Config) {
 }
 
 fn compile() {
-    // println!("cargo:rustc-link-lib=z");
-    // let out_dir = env::var("OUT_DIR").unwrap();
-    // let dir = "vendor/sqlite-autoconf-3270100";
-    // let mut config = Config::new(dir);
-    // config.reconf("-fi");
-    // config.cflag("-fPIC");
-    // maybe_cross_compile(&mut config);
-    // println!("cargo:rustc-link-lib=static=sqlite3");
+    println!("cargo:rustc-link-lib=z");
+    let out_dir = env::var("OUT_DIR").unwrap();
+    let dir = "vendor/sqlite-autoconf-3270100";
+    let mut config = Config::new(dir);
+    config.reconf("-fi");
+    config.cflag("-fPIC");
+    maybe_cross_compile(&mut config);
+    println!("cargo:rustc-link-lib=static=sqlite3");
     let dir = "vendor/proj-5.2.0";
     let mut config = Config::new(dir);
     config.reconf("-fi");
@@ -42,17 +42,18 @@ fn compile() {
     println!("cargo:rustc-link-lib=static=geos");
     println!("cargo:rustc-link-lib=static=geos_c");
     let target  = env::var("TARGET").unwrap();
-    let dir = "vendor/libiconv-1.15";
-    let mut config = Config::new(dir);
-    config.cflag(format!("-I {}/include -fPIC", out_dir));
-    config.ldflag(format!("-L{}/lib", out_dir));;
-    maybe_cross_compile(&mut config);
-    println!("cargo:rustc-link-lib=static=iconv");
+    // let dir = "vendor/libiconv-1.15";
+    // let mut config = Config::new(dir);
+    // config.cflag(format!("-I {}/include -fPIC", out_dir));
+    // config.ldflag(format!("-L{}/lib", out_dir));;
+    // maybe_cross_compile(&mut config);
+    // println!("cargo:rustc-link-lib=static=iconv");
     let dir = "vendor/libspatialite-4.3.0a";
     let mut config = Config::new(dir);
     config.reconf("-fi");
     config.disable("examples", None);
     config.disable("freexl", None);
+    config.disable("iconv", None);
     config.cflag(format!("-pthread -I {}/include -fPIC", out_dir));
     config.ldflag(format!("-L{}/lib -latomic -ldl", out_dir));
     config.with("geosconfig", Some(&format!("{}/bin/geos-config", out_dir)));
@@ -82,10 +83,4 @@ fn main() {
     } else {
         compile();
     }
-    let out_dir = env::var("OUT_DIR").unwrap();
-    let _ = bindgen::builder()
-        .header("src/wrapper.h")
-        .clang_arg(format!("-I{}/include", out_dir))
-        .generate().unwrap()
-        .write_to_file(Path::new(&out_dir).join("spatialite_sys.rs"));
 }
