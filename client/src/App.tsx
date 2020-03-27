@@ -1,32 +1,16 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import React from 'react';
+import "react-native-gesture-handler";
+import React from "react";
 import {
   SafeAreaView,
   StyleSheet,
   View,
   StatusBar,
-} from 'react-native';
-import { Counter } from "./components/counter";
+} from "react-native";
+import RootNavigator from "./navigations"
 
 const App = () => {
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.container}>
-        <View style={styles.sectionContainer}>
-          <Counter color={"lightblue"} size={16} />
-        </View>
-      </SafeAreaView>
-    </>
+    <RootNavigator />
   );
 };
 
