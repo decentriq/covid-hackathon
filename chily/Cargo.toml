@@ -1,0 +1,57 @@
+[package]
+name = "chily"
+version = "0.2.0"
+description = "Crypto wrapper library"
+authors = ["\"decentriq\" <opensource@decentriq.ch>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+python = ["pyo3"]
+
+[dependencies]
+rand = { version = "0.6.0", features = ["wasm-bindgen", "stdweb"] }
+chacha20poly1305 = "0.4.1"
+
+[dependencies.pyo3]
+version = "0.8.3"
+features = ["extension-module"]
+optional = true
+
+[dependencies.x25519-dalek]
+version = "0.5.2"
+features = ["nightly", "u32_backend"]
+default-features = false
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2.0"
+wee_alloc = { version = "0.4.2", optional = true }
+# `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
+# compared to the default allocator's ~10K. It is slower than the default
+# allocator, however.
+# Unfortunately, `wee_alloc` requires nightly Rust when targeting wasm for now.
+
+# The `console_error_panic_hook` crate provides better debugging of panics by
+# logging them with `console.error`. This is great for development, but requires
+# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
+# code size when deploying.
+console_error_panic_hook = { version = "0.1.1", optional = true }
+
+[target.'cfg(target_env = "sgx")'.dependencies]
+rdrand = {version = "0.6.0", optional = false}
+
+[dev-dependencies]
+wasm-bindgen-test = "0.2.0"
+ascii = "1.0.0"
+hex = "0.4.0"
+
+[profile.release]
+opt-level = "s"
+
+[package.metadata.maturin]
+maintainer = "decentriq"
+maintainer-email = "\"decentriq\" <opensource@decentriq.ch>"
+requires-python = "==3.7.*"
