@@ -1,6 +1,6 @@
 let
   pkgs = import <nixpkgs> {};
-  rustTools = import ../../rust-tools.nix;
+  rustTools = import ../nix/rust-tools.nix;
 in pkgs.rustPlatform.buildRustPackage rec {
   name = "chily";
   src = ./.;
@@ -25,4 +25,3 @@ in pkgs.rustPlatform.buildRustPackage rec {
   RUST_BACKTRACE = "full";
   RUST_LOG = "info";
 }
-)
