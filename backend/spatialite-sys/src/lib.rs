@@ -1,4 +1,5 @@
-#![feature(static_nobundle)]
+extern crate rs_libc;
+extern crate rs_libc_decentriq;
 
 use std::os::raw::{c_int};
 use rusqlite::Connection;

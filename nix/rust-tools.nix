@@ -8,8 +8,8 @@ let
   };
   rustOverlay = import "${mozillaOverlay.out}/rust-overlay.nix" pkgs pkgs;
   rustNightly = rustOverlay.rustChannelOf {
-      sha256 = "1w75wp7kfafvldr49d64vzrxxll2dglbsm4j28a9f9yxc12dgn14";
-      date = "2020-03-18";
+      sha256 = "125khcn07ki9waarp85g21slyd35li7rh31ppyahr22pi00y7zrj";
+      date = "2019-11-13";
       channel = "nightly";
   };
   rustSgx = rustNightly.rust.override {

@@ -31,9 +31,9 @@ fn main() {
     }
 
     let name = if env::var("TARGET").unwrap() == "x86_64-fortanix-unknown-sgx" {
-        "libc-decentriq.a"
+        "c-decentriq"
     } else {
-        "librsc-decentriq.a"
+        "rsc-decentriq"
     };
 
     build
@@ -47,6 +47,7 @@ fn main() {
         .define("__NO_MATH_INLINES", None)
         .flag("-ffreestanding")
         .warnings(false)
-        .compile(name);
+        .compile(format!("lib{}.a", name).as_str());
     println!("cargo:lib_dir={}", out_dir);
+    println!("cargo:rustc-link-lib=static={}", name);
 }

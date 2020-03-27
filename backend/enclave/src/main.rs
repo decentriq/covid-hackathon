@@ -1,5 +1,6 @@
 extern crate rs_libc;
 extern crate rs_libc_decentriq;
+extern crate spatialite_sys;
 use hyper::server::Request;
 use hyper::server::Response;
 use rusqlite::params;
