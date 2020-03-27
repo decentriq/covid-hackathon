@@ -6,19 +6,63 @@ use rusqlite::params;
 use rusqlite::Connection;
 use rusqlite::Result;
 use std::io::Read;
+use std::collections::HashSet;
+use hyper::uri::RequestUri::AbsolutePath;
+use hyper::net::Fresh;
+use std::sync::{Arc, Mutex};
 
-fn hello(mut req: Request, res: Response) {
-    let mut buffer = Vec::new();
+type UserId = String;
 
-    req.read_to_end(&mut buffer);
-    let req_str = std::str::from_utf8(&buffer).unwrap();
+struct EnclaveState {
+    connection: Connection,
+    to_notify: HashSet<UserId>,
+}
 
-    let conn = Connection::open_in_memory().unwrap();
+struct EnclaveHandler {
+    state: Arc<Mutex<EnclaveState>>,
+}
 
-    res.send(req_str.as_bytes()).unwrap();
+impl EnclaveHandler {
+    fn new(connection: Connection) -> EnclaveHandler {
+        let state = EnclaveState {
+            connection,
+            to_notify: HashSet::new(),
+        };
+
+        EnclaveHandler { state: Arc::new(Mutex::new(state)) }
+    }
+
+
+    fn handle_poll(&self, req: &mut Request, res: &mut Response) {
+
+    }
+}
+
+impl hyper::server::Handler for EnclaveHandler {
+    fn handle(&self, mut req: Request, mut res: Response) {
+        match req.uri {
+            AbsolutePath(ref path) => match (&req.method, &path[..]) {
+                (&hyper::Post, "/poll") => {
+                    handle_poll(&mut req, &mut res);
+                }
+                _ => {
+                    *res.status_mut() = hyper::NotFound;
+                }
+            },
+            _ => {
+                *res.status_mut() = hyper::NotFound;
+            }
+        }
+
+        let mut res = try_return!(res.start());
+        try_return!(copy(&mut req, &mut res));
+    }
+}
+
+fn process_main(mut req: Request, mut res: Response) {
 }
 
 fn main() {
-    let _listening = hyper::Server::http("127.0.0.1:3000").unwrap().handle(hello);
+    let _listening = hyper::Server::http("127.0.0.1:3000").unwrap().handle(process_main);
     println!("Listening on http://127.0.0.1:3000");
 }
