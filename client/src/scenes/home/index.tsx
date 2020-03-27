@@ -2,26 +2,36 @@ import React from 'react';
 import {
   SafeAreaView,
   Text,
-  TouchableHighlight
 } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { HomeNavigatorParamList } from "../../navigations/home-navigator"
 
-type HomeScreenNavigationProp = StackNavigationProp<
+type StatusScreenNavigationProp = BottomTabNavigationProp<
   HomeNavigatorParamList,
-  'Home'
+  'Status'
 >;
 
-type HomePropos = {
-  navigation: HomeScreenNavigationProp;
+type StatusPropos = {
+  navigation: StatusScreenNavigationProp;
 };
 
-export const HomeScreen = ({navigation}: any) => (
+export const StatusScreen = ({navigation}: StatusPropos) => (
   <SafeAreaView>
-    <Text>Screen: Home</Text>
+    <Text>Screen: Status</Text>
+  </SafeAreaView>
+);
 
-    <TouchableHighlight onPress={() => navigation.navigate('Home')}>
-      <Text>Go to home</Text>
-    </TouchableHighlight>
+type AboutScreenNavigationProp = BottomTabNavigationProp<
+  HomeNavigatorParamList,
+  'About'
+>;
+
+type AboutPropos = {
+  navigation: AboutScreenNavigationProp;
+};
+
+export const AboutScreen = ({navigation}: AboutPropos) => (
+  <SafeAreaView>
+    <Text>Screen: About</Text>
   </SafeAreaView>
 );

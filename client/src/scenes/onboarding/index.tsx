@@ -25,7 +25,7 @@ type CompletedProps = {
   navigation: CompletedScreenNavigationProp;
 };
 
-export const IntroScreen = ({navigation}: any) => (
+export const IntroScreen = ({navigation}: IntroProps) => (
   <SafeAreaView>
     <Text>Screen: Intro</Text>
 
@@ -35,7 +35,7 @@ export const IntroScreen = ({navigation}: any) => (
   </SafeAreaView>
 );
 
-export const CompletedScreen = ({navigation}: any) => (
+export const CompletedScreen = ({navigation}: CompletedProps) => (
   <SafeAreaView>
     <Text>Screen: Login</Text>
 

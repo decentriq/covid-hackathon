@@ -1,18 +1,20 @@
 import React from "react";
 
-import { createStackNavigator } from "@react-navigation/stack";
-import { HomeScreen } from "../scenes/home";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StatusScreen, AboutScreen } from "../scenes/home";
 
 export type HomeNavigatorParamList = {
-  Home: undefined,
+  Status: undefined,
+  About: undefined,
 }
 
-const HomeStack = createStackNavigator<HomeNavigatorParamList>();
+const HomeStack = createBottomTabNavigator<HomeNavigatorParamList>();
 
 export function HomeNavigator() {
   return (
   <HomeStack.Navigator initialRouteName="Home">
-    <HomeStack.Screen name="Home" component={HomeScreen} />
+    <HomeStack.Screen name="Status" component={StatusScreen} />
+    <HomeStack.Screen name="About" component={AboutScreen} />
   </HomeStack.Navigator>
   )
 }

@@ -7,6 +7,7 @@ import { IntroScreen, CompletedScreen } from "../scenes/onboarding";
 export type OnboardingNavigatorParamList = {
   Intro: undefined,
   Completed: undefined,
+  Home: undefined,
 }
 
 const OnboardingStack = createStackNavigator<OnboardingNavigatorParamList>();
