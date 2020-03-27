@@ -13,7 +13,7 @@ const OnboardingStack = createStackNavigator<OnboardingNavigatorParamList>();
 
 export function OnboardingNavigator() {
   return (
-  <OnboardingStack.Navigator initialRouteName="Intro">
+    <OnboardingStack.Navigator initialRouteName="Intro">
     <OnboardingStack.Screen name="Intro" component={IntroScreen} />
     <OnboardingStack.Screen name="Completed" component={CompletedScreen} />
   </OnboardingStack.Navigator>
