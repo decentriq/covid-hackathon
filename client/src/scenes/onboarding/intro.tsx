@@ -27,8 +27,12 @@ export const IntroScreen = ({navigation}: IntroProps) =>  {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.h1}>Cocotrace</Text>
-          <Text>Some more text explaining the app</Text>
-          <Text>Text that keeps goinText that keeps goinText that keeps goinText that keeps goinText that keeps goingggggText that keeps going</Text>
+          <View style={styles.subtitle}>
+            <Text style={styles.h2}>Location tracing done</Text><Text style={styles.h2_underline}>right</Text>
+          </View>
+          <Text style={styles.header_paragraph}>
+            Text that keeps goinText that keeps goinText that keeps goinText that keeps goinText that keeps goingggggText that keeps going
+          </Text>
         </View>
         <View style={styles.info_section}>
           <TouchableHighlight style={styles.info_section_button} onPress={() => navigation.navigate("Explaination")}>
@@ -77,6 +81,27 @@ const styles = StyleSheet.create({
   h1: {
     fontSize: 40,
     fontWeight: "bold",
+    color: Colors.EXTRA_DARK_BLUE,
+  },
+  subtitle: {
+    marginTop: 5,
+    flexDirection: "row",
+  },
+  h2: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: Colors.EXTRA_DARK_BLUE,
+  },
+  h2_underline: {
+    paddingLeft: 5,
+    fontSize: 20,
+    fontWeight: "bold",
+    textDecorationLine: "underline",
+    color: Colors.EXTRA_DARK_BLUE,
+  },
+  header_paragraph: {
+    marginTop: 10,
+    color: Colors.EXTRA_DARK_BLUE,
   },
   info_section: {
     flex: 3,
@@ -89,7 +114,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 10,
     borderRadius: 10,
-    margin: 30,
+    margin: 15,
   },
   info_section_container: {
 
