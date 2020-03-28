@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textDecorationLine: "underline",
-    color: Colors.EXTRA_DARK_BLUE,
+    color: Colors.MAIN_BLUE,
   },
   header_paragraph: {
     marginTop: 10,
