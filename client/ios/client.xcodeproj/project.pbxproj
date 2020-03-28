@@ -18,6 +18,7 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* clientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* clientTests.m */; };
 		3B199618242EC0E300A64F6B /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B199617242EC0E300A64F6B /* RNBackgroundFetch+AppDelegate.m */; };
+		9A21B4CF242FE130008548F3 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A21B4CE242FE130008548F3 /* File.swift */; };
 		AB06DC37DC21EB7AD621BB49 /* libPods-client-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 175EE20A94DA7935E1D8B1DA /* libPods-client-tvOSTests.a */; };
 		D289063D516C14DEE3FCB12B /* libPods-client-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F86AA3C5CAF4BB16CA22E38 /* libPods-client-tvOS.a */; };
 		F7320558A678C72C287763F9 /* libPods-clientTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BED25CFE7D07116F4C20E7D /* libPods-clientTests.a */; };
@@ -64,6 +65,8 @@
 		62ABF624F072352F40017F6F /* Pods-client-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-client-tvOSTests/Pods-client-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		77684883EB027A29E5D441CC /* libPods-client.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-client.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B7BF45E4BDE654AE6433865 /* Pods-client.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client.release.xcconfig"; path = "Target Support Files/Pods-client/Pods-client.release.xcconfig"; sourceTree = "<group>"; };
+		9A21B4CD242FE130008548F3 /* client-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "client-Bridging-Header.h"; sourceTree = "<group>"; };
+		9A21B4CE242FE130008548F3 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		AA558F0FCCFF6DD51934D291 /* Pods-client-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-client-tvOSTests/Pods-client-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B6B625C50F46028F04E8F32A /* Pods-client-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-client-tvOS/Pods-client-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		B6D9ED8BA76A507C39386551 /* Pods-client-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-client-tvOS.release.xcconfig"; path = "Target Support Files/Pods-client-tvOS/Pods-client-tvOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -177,12 +180,14 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9A21B4CE242FE130008548F3 /* File.swift */,
 				13B07FAE1A68108700A75B9A /* client */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* clientTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				131E46294AF36F49A716DC17 /* Pods */,
+				9A21B4CD242FE130008548F3 /* client-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -298,6 +303,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = VJ8592T25A;
+						LastSwiftMigration = 1140;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -586,6 +592,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B199618242EC0E300A64F6B /* RNBackgroundFetch+AppDelegate.m in Sources */,
+				9A21B4CF242FE130008548F3 /* File.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -640,6 +647,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 27AC4241C581552FA2573827 /* Pods-clientTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = VJ8592T25A;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -664,6 +672,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 192D8D3C9C46F4D0D054BFBD /* Pods-clientTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = VJ8592T25A;
@@ -686,6 +695,7 @@
 			baseConfigurationReference = 2638C236CAE6F657365F6264 /* Pods-client.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = VJ8592T25A;
@@ -698,6 +708,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = client;
+				SWIFT_OBJC_BRIDGING_HEADER = "client-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -707,6 +720,7 @@
 			baseConfigurationReference = 8B7BF45E4BDE654AE6433865 /* Pods-client.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VJ8592T25A;
 				INFOPLIST_FILE = client/Info.plist;
@@ -718,6 +732,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = client;
+				SWIFT_OBJC_BRIDGING_HEADER = "client-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
