@@ -59,11 +59,12 @@ export class StatusScreen extends React.Component<StatusProps, StatusState> {
   }
 
   componentDidMount() {
+    console.log("Home mounted");
     BackgroundGeolocation.ready({
       distanceFilter: 10,
       stopOnTerminate: false,
       logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      debug: true
+      debug: false
     }, (state) => {
       console.log("- BackgroundGeolocation is configured and ready: ", state.enabled);
 

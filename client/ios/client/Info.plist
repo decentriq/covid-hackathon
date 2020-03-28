@@ -64,5 +64,9 @@
 	<string>Location required when app is in use</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location required when app is in use</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>FontAwesome.ttf</string>
+	</array>
 </dict>
 </plist>
