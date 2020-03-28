@@ -66,6 +66,7 @@ struct EnclaveHandler {
 }
 
 #[derive(Debug)]
+#[derive(Clone)]
 #[derive(Serialize, Deserialize)]
 struct TimestampedCoordinate {
     timestamp: DateTime<Utc>,
@@ -119,7 +120,7 @@ impl EnclaveHandler {
         let mut poll_request: PollRequest = serde_json::from_reader(decrypted)?;
         let poll_response = {
             let mut guard = self.state.lock().unwrap();
-            EnclaveHandler::insert_new_points(guard.borrow_mut(), &mut poll_request);
+            EnclaveHandler::insert_new_points(guard.borrow_mut(), &poll_request);
             EnclaveHandler::update_if_necessary(guard.borrow_mut(), &poll_request, &self.configuration);
             EnclaveHandler::query_exposed(guard.borrow(), &poll_request)
         };
@@ -129,31 +130,35 @@ impl EnclaveHandler {
         Ok(encrypted)
     }
 
-    fn update_if_necessary(state: &mut EnclaveState, request: &PollRequest, configuration: &Configuration) {
-        let latest_timestamped_coordinate = request.timestamped_coordinates.iter().max_by(|a, b| {
+    fn get_latest_timestamp(request: &PollRequest) -> Option<DateTime<Utc>> {
+        request.timestamped_coordinates.iter().max_by(|a, b| {
             a.timestamp.cmp(&b.timestamp)
-        });
-        info!("Latest timestamped coordinate in request {:?}", latest_timestamped_coordinate);
-        let latest_timestamp = match latest_timestamped_coordinate {
+        }).map(|timestamped_coordinate|timestamped_coordinate.timestamp)
+    }
+
+    fn update_if_necessary(state: &mut EnclaveState, poll_request: &PollRequest, configuration: &Configuration) {
+        let latest_timestamp = EnclaveHandler::get_latest_timestamp(poll_request);
+        info!("Latest timestamp in request {:?}", latest_timestamp);
+        let latest_timestamp_unwrapped = match latest_timestamp {
             None => {
                 // Don't update if there are no timestamps in the request at all
                 return
             },
-            Some(coord) => {
+            Some(timestamp) => {
                 // If there was at least one update already..
                 if let Some(last_update) = state.last_update {
                     // .. but not enough time has passed ..
-                    if coord.timestamp - last_update < configuration.update_interval {
+                    if timestamp - last_update < configuration.update_interval {
                         // .. then don't update ..
                         return
                     }
                 }
                 // Otherwise update
-                coord.timestamp
+                timestamp
             }
         };
 
-        info!("Updating database");
+        info!("Updating database, enclave state {:?}", state);
 
         let delta_squared = configuration.exposure_space_distance * configuration.exposure_space_distance;
         for entry in &state.temp_in_memory {
@@ -178,13 +183,13 @@ impl EnclaveHandler {
             }
         }
 
-        state.last_update = Some(latest_timestamp);
+        state.last_update = Some(latest_timestamp_unwrapped);
     }
 
-    fn insert_new_points(state: &mut EnclaveState, request: &mut PollRequest) {
+    fn insert_new_points(state: &mut EnclaveState, request: &PollRequest) {
         info!("Inserting new points of {}", request.user_id);
 
-        for timestamped_coordinate in request.timestamped_coordinates.drain(0..) {
+        for timestamped_coordinate in request.timestamped_coordinates.clone() {
             state.temp_in_memory.push(TempEntry {
                 user_id: request.user_id.clone(),
                 infected: request.infected,
