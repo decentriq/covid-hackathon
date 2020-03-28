@@ -17,6 +17,8 @@
     "axios": "^0.19.2",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-background-fetch": "2.7.1",
+    "react-native-background-geolocation": "^3.4.2",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.7.1",
     "react-native-safe-area-context": "^0.7.3",

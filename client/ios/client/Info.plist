@@ -37,8 +37,11 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>location</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -53,5 +56,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>Privacy - Location Always and When in Use Usage Description</key>
+	<string>Background tracking required</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Motion permission helps detect when device in in-motion</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Location required when app is in use</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location required when app is in use</string>
 </dict>
 </plist>

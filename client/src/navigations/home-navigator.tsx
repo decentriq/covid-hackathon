@@ -12,7 +12,7 @@ const HomeStack = createBottomTabNavigator<HomeNavigatorParamList>();
 
 export function HomeNavigator() {
   return (
-  <HomeStack.Navigator initialRouteName="Home">
+  <HomeStack.Navigator initialRouteName="Status">
     <HomeStack.Screen name="Status" component={StatusScreen} />
     <HomeStack.Screen name="About" component={AboutScreen} />
   </HomeStack.Navigator>
