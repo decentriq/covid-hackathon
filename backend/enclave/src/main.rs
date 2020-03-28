@@ -1,10 +1,5 @@
-extern crate rs_libc;
-extern crate rs_libc_decentriq;
-extern crate spatialite_sys;
 use hyper::server::Request;
 use hyper::server::Response;
-use rusqlite::params;
-use rusqlite::Connection;
 use std::io::Read;
 use std::collections::{HashSet, HashMap};
 use hyper::uri::RequestUri::AbsolutePath;
@@ -19,28 +14,44 @@ use time::Duration;
 use std::ops::Sub;
 use std::borrow::{BorrowMut, Borrow};
 use log::info;
+use log::warn;
 use log::error;
+use sgx_isa::Report;
+use sgx_isa::Targetinfo;
 
 type UserId = String;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+type Keypair = ();
 
 struct Configuration {
     // The time distance under which a point is considered exposed wrt an infected point.
     exposure_time_distance: Duration,
     // The space distance under which a point is considered exposed wrt an infected point.
     exposure_space_distance: f32,
-    // The interval of the enclave scanning and updating its state.
+    // The interval of the enclave scanning and updating its state. If 0 then every request will
+    // trigger an update.
     update_interval: Duration,
 }
 
+impl Default for Configuration {
+    fn default() -> Self {
+        Configuration {
+            exposure_time_distance: Duration::seconds(30),
+            exposure_space_distance: 3.0,
+            update_interval: Duration::seconds(0),
+        }
+    }
+}
+
+#[derive(Debug)]
 struct EnclaveState {
-    connection: Connection,
     exposed: HashMap<UserId, DateTime<Utc>>,
     last_update: Option<DateTime<Utc>>,
 
     temp_in_memory: Vec<TempEntry>,
 }
 
+#[derive(Debug)]
 struct TempEntry {
     user_id: UserId,
     infected: bool,
@@ -49,6 +60,8 @@ struct TempEntry {
 
 struct EnclaveHandler {
     state: Arc<Mutex<EnclaveState>>,
+    keypair: Keypair,
+    report: Report,
     configuration: Configuration,
 }
 
@@ -75,9 +88,8 @@ struct PollResponse {
 }
 
 impl EnclaveHandler {
-    fn new(connection: Connection) -> EnclaveHandler {
+    fn new(keypair: Keypair, report: Report) -> EnclaveHandler {
         let state = EnclaveState {
-            connection,
             exposed: HashMap::new(),
             last_update: None,
             temp_in_memory: vec![],
@@ -86,12 +98,25 @@ impl EnclaveHandler {
         let asd: Duration = utc.sub(utc);
         EnclaveHandler {
             state: Arc::new(Mutex::new(state)),
+            keypair,
+            report,
             configuration: Configuration::default(),
         }
     }
 
+    fn decrypt<R: Read>(_keypair: Keypair, reader: R) -> R {
+        warn!("TODO decrypt");
+        reader
+    }
+
+    fn encrypt(_keypair: Keypair, input: Vec<u8>) -> Vec<u8> {
+        warn!("TODO encrypt");
+        input
+    }
+
     fn handle_poll(&self, req: &mut Request) -> Result<Vec<u8>> {
-        let mut poll_request: PollRequest = serde_json::from_reader(req)?;
+        let decrypted = EnclaveHandler::decrypt(self.keypair, req);
+        let mut poll_request: PollRequest = serde_json::from_reader(decrypted)?;
         let poll_response = {
             let mut guard = self.state.lock().unwrap();
             EnclaveHandler::insert_new_points(guard.borrow_mut(), &mut poll_request);
@@ -99,13 +124,16 @@ impl EnclaveHandler {
             EnclaveHandler::query_exposed(guard.borrow(), &poll_request)
         };
         info!("Poll response {:?}", poll_response);
-        Ok(serde_json::to_vec(&poll_response).unwrap())
+        let serialized_response = serde_json::to_vec(&poll_response).unwrap();
+        let encrypted = EnclaveHandler::encrypt(self.keypair, serialized_response);
+        Ok(encrypted)
     }
 
     fn update_if_necessary(state: &mut EnclaveState, request: &PollRequest, configuration: &Configuration) {
         let latest_timestamped_coordinate = request.timestamped_coordinates.iter().max_by(|a, b| {
             a.timestamp.cmp(&b.timestamp)
         });
+        info!("Latest timestamped coordinate in request {:?}", latest_timestamped_coordinate);
         let latest_timestamp = match latest_timestamped_coordinate {
             None => {
                 // Don't update if there are no timestamps in the request at all
@@ -202,22 +230,24 @@ impl hyper::server::Handler for EnclaveHandler {
     }
 }
 
-impl Default for Configuration {
-    fn default() -> Self {
-        Configuration {
-            exposure_time_distance: Duration::seconds(30),
-            exposure_space_distance: 3.0,
-            update_interval: Duration::seconds(1),
-        }
-    }
-}
-
 fn main() {
     setup_logging();
-    let connection = Connection::open_in_memory().unwrap();
-    let enclave_handler = EnclaveHandler::new(connection);
+    let keypair = generate_keypair();
+    let report = create_report(keypair);
+    let enclave_handler = EnclaveHandler::new(keypair, report);
     let _listening = hyper::Server::http("[::]:3000").unwrap().handle(enclave_handler);
     println!("Listening on http://[::]:3000");
+}
+
+fn create_report(keypair: Keypair) -> Report {
+    let target_info = Targetinfo::default();
+    warn!("TODO create_report fill report_data");
+    let report_data = [0; 64];
+    Report::for_target(&target_info, &report_data)
+}
+
+fn generate_keypair() -> Keypair {
+    warn!("TODO generate_keypair");
 }
 
 fn setup_logging() {
