@@ -13,3 +13,6 @@ env_logger = { version = "0.7.1", default-features = false, features = ["humanti
 log = "0.4.8"
 chrono = { version = "0.4.11", features = ["serde"] }
 sgx-isa = { version = "0.3.1", features = ["sgxstd"] }
+geographiclib = "0.1.0"
+kdtree = { path = "../kdtree-rs" }
+nav-types = "0.4.4"

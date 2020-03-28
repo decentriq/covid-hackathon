@@ -1,7 +1,7 @@
 use hyper::server::Request;
 use hyper::server::Response;
 use std::io::Read;
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap};
 use hyper::uri::RequestUri::AbsolutePath;
 use hyper::net::Fresh;
 use std::sync::Arc;
@@ -18,6 +18,8 @@ use log::warn;
 use log::error;
 use sgx_isa::Report;
 use sgx_isa::Targetinfo;
+use nav_types::{ WGS84, ECEF };
+use kdtree::KdTree;
 
 type UserId = String;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -31,6 +33,10 @@ struct Configuration {
     // The interval of the enclave scanning and updating its state. If 0 then every request will
     // trigger an update.
     update_interval: Duration,
+    // The time before a user is set as infected in which the user is considered to be exposed.
+    infectious_period: Duration,
+    // The number of points to store in a KD tree node before splitting.
+    kdtree_capacity: usize
 }
 
 impl Default for Configuration {
@@ -38,24 +44,24 @@ impl Default for Configuration {
         Configuration {
             exposure_time_distance: Duration::seconds(30),
             exposure_space_distance: 3.0,
-            update_interval: Duration::seconds(0),
+            update_interval: Duration::seconds(1),
+            infectious_period: Duration::weeks(2),
+            kdtree_capacity: 50
         }
     }
 }
 
 #[derive(Debug)]
-struct EnclaveState {
-    exposed: HashMap<UserId, DateTime<Utc>>,
-    last_update: Option<DateTime<Utc>>,
-
-    temp_in_memory: Vec<TempEntry>,
+struct User {
+    gps_track: Vec<TimestampedCoordinate>,
+    infected_time: Option<DateTime<Utc>>,
+    exposure_time: Option<DateTime<Utc>>
 }
 
 #[derive(Debug)]
-struct TempEntry {
-    user_id: UserId,
-    infected: bool,
-    timestamped_coordinate: TimestampedCoordinate,
+struct EnclaveState {
+    users: HashMap<UserId, User>,
+    last_update: Option<DateTime<Utc>>,
 }
 
 struct EnclaveHandler {
@@ -66,10 +72,11 @@ struct EnclaveHandler {
 }
 
 #[derive(Debug)]
-#[derive(Clone)]
 #[derive(Serialize, Deserialize)]
+#[derive(Clone)]
 struct TimestampedCoordinate {
     timestamp: DateTime<Utc>,
+    // WGS-84 coordinates
     x: f32,
     y: f32,
 }
@@ -78,7 +85,7 @@ struct TimestampedCoordinate {
 #[derive(Serialize, Deserialize)]
 struct PollRequest {
     user_id: UserId,
-    infected: bool,
+    infected_time: Option<DateTime<Utc>>,
     timestamped_coordinates: Vec<TimestampedCoordinate>,
 }
 
@@ -91,9 +98,8 @@ struct PollResponse {
 impl EnclaveHandler {
     fn new(keypair: Keypair, report: Report) -> EnclaveHandler {
         let state = EnclaveState {
-            exposed: HashMap::new(),
             last_update: None,
-            temp_in_memory: vec![],
+            users: HashMap::new(),
         };
         let utc: DateTime<Utc> = Utc::now();
         let asd: Duration = utc.sub(utc);
@@ -160,26 +166,72 @@ impl EnclaveHandler {
 
         info!("Updating database, enclave state {:?}", state);
 
-        let delta_squared = configuration.exposure_space_distance * configuration.exposure_space_distance;
-        for entry in &state.temp_in_memory {
-            if let Some(exposure_time) = state.exposed.get(&entry.user_id) {
-                // If we know the user is marked exposed with a more recent timestamp, don't scan.
-                if exposure_time > &entry.timestamped_coordinate.timestamp {
-                    continue
+        // Build a KD tree containing all the tracks.
+        // TODO: this kd tree could be updated dynamically, but then it would need to be rebalanced
+        let mut kdtree = KdTree::with_capacity(4, configuration.kdtree_capacity);
+        for ( user_id, user ) in &state.users {
+            for entry in &user.gps_track {
+                let pos = WGS84::new(entry.x as f64, entry.y as f64, 0.0);
+                let ecef_pos = ECEF::from(pos);
+
+                let point: [f64; 4] = [
+                    ecef_pos.x(),
+                    ecef_pos.y(),
+                    ecef_pos.z(),
+                    entry.timestamp.timestamp() as f64
+                ];
+
+                kdtree.add(point, user_id).unwrap();
+            }
+        }
+
+        let space_limit = configuration.exposure_space_distance as f64;
+        let time_limit = configuration.exposure_time_distance;
+        let mut exposure_times: HashMap<UserId, DateTime<Utc>> = HashMap::new();
+        for ( user_id, user ) in &state.users {
+            if let Some(infected_time) = user.infected_time {
+                let infection_start = infected_time - configuration.infectious_period;
+                for entry in &user.gps_track {
+                    if entry.timestamp < infection_start {
+                        // This entry was before the user was infectious.
+                        continue;
+                    }
+
+                    // Find people who were exposed.
+                    let pos = WGS84::new(entry.x as f64, entry.y as f64, 0.0);
+                    let ecef_pos = ECEF::from(pos);
+
+                    let range_min: [f64; 4] = [
+                        ecef_pos.x() - space_limit,
+                        ecef_pos.y() - space_limit,
+                        ecef_pos.z() - space_limit,
+                        (entry.timestamp - time_limit).timestamp() as f64
+                    ];
+
+                    let range_max: [f64; 4] = [
+                        ecef_pos.x() + space_limit,
+                        ecef_pos.y() + space_limit,
+                        ecef_pos.z() + space_limit,
+                        (entry.timestamp + time_limit).timestamp() as f64
+                    ];
+
+                    for other_user_id in kdtree.in_range(&range_min, &range_max) {
+                        match exposure_times.get_mut(*other_user_id) {
+                            None => { exposure_times.insert(other_user_id.to_string(), entry.timestamp); },
+                            Some(cur_exposure_time) => {
+                                if entry.timestamp < *cur_exposure_time {
+                                    *cur_exposure_time = entry.timestamp;
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            let coord = &entry.timestamped_coordinate;
-            for other_entry in &state.temp_in_memory {
-                if other_entry.user_id == entry.user_id {
-                    continue
-                }
-                let dx = entry.timestamped_coordinate.x - other_entry.timestamped_coordinate.x;
-                let dy = entry.timestamped_coordinate.y - other_entry.timestamped_coordinate.y;
-                let dtime = entry.timestamped_coordinate.timestamp - other_entry.timestamped_coordinate.timestamp;
-                if dtime < configuration.exposure_time_distance && dx * dx + dy * dy < delta_squared {
-                    state.exposed.insert(entry.user_id.clone(), entry.timestamped_coordinate.timestamp);
-                    break
-                }
+        }
+
+        for ( user_id, exposure_time ) in exposure_times {
+            if let Some(user) = state.users.get_mut(&user_id) {
+                user.exposure_time = Some(exposure_time);
             }
         }
 
@@ -188,20 +240,21 @@ impl EnclaveHandler {
 
     fn insert_new_points(state: &mut EnclaveState, request: &PollRequest) {
         info!("Inserting new points of {}", request.user_id);
-
-        for timestamped_coordinate in request.timestamped_coordinates.clone() {
-            state.temp_in_memory.push(TempEntry {
-                user_id: request.user_id.clone(),
-                infected: request.infected,
-                timestamped_coordinate
-            });
+        match state.users.get_mut(&request.user_id) {
+            Some(user) => {
+                user.infected_time = request.infected_time;
+                for timestamped_coordinate in &request.timestamped_coordinates {
+                    user.gps_track.push(timestamped_coordinate.clone());
+                }
+            },
+            None => info!("Attempted to update non-existent user {}", request.user_id)
         }
     }
 
     fn query_exposed(state: &EnclaveState, request: &PollRequest) -> PollResponse {
         info!("Querying exposed status of {}", request.user_id);
         PollResponse {
-            exposed_timestamp: state.exposed.get(&request.user_id).cloned()
+            exposed_timestamp: state.users.get(&request.user_id).and_then(|user| user.exposure_time.clone())
         }
     }
 }
