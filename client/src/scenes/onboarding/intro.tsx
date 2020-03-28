@@ -8,11 +8,11 @@ import {
   StyleSheet
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { OnboardingNavigatorParamList } from "../../navigations/onboarding-navigator";
+import { OnboardingIntroNavigatorParamList } from "../../navigations/onboarding-navigator";
 import { Colors } from "../../styles";
 
 type IntroScreenNavigationProp = StackNavigationProp<
-  OnboardingNavigatorParamList,
+  OnboardingIntroNavigatorParamList,
   'Intro'
 >;
 
@@ -23,31 +23,35 @@ type IntroProps = {
 export const IntroScreen = ({navigation}: IntroProps) =>  {
   navigation.setOptions({headerShown: false})
   return (
-  <SafeAreaView style={styles.safeContainer}>
-    <View style={styles.container}>
-    <View style={styles.header}>
-      <Text style={styles.h1}>Cocotrace</Text>
-      <Text>Some more text explaining the app</Text>
-      <Text>Text that keeps goinText that keeps goinText that keeps goinText that keeps goinText that keeps goingggggText that keeps going</Text>
-    </View>
-    <View style={styles.info_section}>
-      <View style={styles.info_image_container}>
-        <Image style={styles.info_image} source={require("../../assets/images/safe.png")} />
-      </View>
-        <View style={styles.info_section_more}>
-          <Text style={styles.info_section_text}>How it works</Text>
+    <SafeAreaView style={styles.safeContainer}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.h1}>Cocotrace</Text>
+          <Text>Some more text explaining the app</Text>
+          <Text>Text that keeps goinText that keeps goinText that keeps goinText that keeps goinText that keeps goingggggText that keeps going</Text>
+        </View>
+        <View style={styles.info_section}>
+          <TouchableHighlight style={styles.info_section_button} onPress={() => navigation.navigate("Explaination")}>
+            <View style={styles.info_section_container}>
+              <View style={styles.info_image_container}>
+                <Image style={styles.info_image} source={require("../../assets/images/safe.png")} />
+              </View>
+              <View style={styles.info_section_more}>
+                <Text style={styles.info_section_text}>How it works</Text>
+              </View>
+            </View>
+          </TouchableHighlight>
+        </View>
+        <View style={styles.footer}>
+          <Text>Some more text</Text>
+          <TouchableHighlight underlayColor={Colors.DARK_ORANGE} style={styles.button} onPress={() => navigation.navigate('Completed')}>
+            <Text style={styles.buttonText}>
+              Sign Up
+            </Text>
+          </TouchableHighlight>
         </View>
       </View>
-    <View style={styles.footer}>
-      <Text>Some more text</Text>
-      <TouchableHighlight underlayColor={Colors.DARK_ORANGE} style={styles.button} onPress={() => navigation.navigate('Completed')}>
-        <Text style={styles.buttonText}>
-          Sign Up
-        </Text>
-      </TouchableHighlight>
-    </View>
-    </View>
-  </SafeAreaView>
+    </SafeAreaView>
 )
 };
 
@@ -86,6 +90,12 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     borderRadius: 10,
     margin: 30,
+  },
+  info_section_container: {
+
+  },
+  info_section_button: {
+    borderRadius: 10,
   },
   info_image: {
     height: "100%",
