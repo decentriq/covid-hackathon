@@ -247,7 +247,14 @@ impl EnclaveHandler {
                     user.gps_track.push(timestamped_coordinate.clone());
                 }
             },
-            None => info!("Attempted to update non-existent user {}", request.user_id)
+            None => {
+                info!("Creating new user {}", request.user_id);
+                state.users.insert(request.user_id.clone(), User {
+                    infected_time: request.infected_time,
+                    exposure_time: None,
+                    gps_track: request.timestamped_coordinates.clone()
+                });
+            }
         }
     }
 
