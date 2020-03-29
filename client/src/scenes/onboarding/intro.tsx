@@ -10,6 +10,7 @@ import {
 import { StackNavigationProp } from '@react-navigation/stack';
 import { OnboardingIntroNavigatorParamList } from "../../navigations/onboarding-navigator";
 import { Colors } from "../../styles";
+import RustNaive from "../../components/RustNative";
 
 type IntroScreenNavigationProp = StackNavigationProp<
   OnboardingIntroNavigatorParamList,
@@ -28,6 +29,7 @@ export const IntroScreen = ({navigation}: IntroProps) =>  {
         <View style={styles.header}>
           <Text style={styles.h1}>Cocotrace</Text>
           <View style={styles.subtitle}>
+            <RustNaive />
             <Text style={styles.h2}>Location tracing done</Text><Text style={styles.h2_underline}>right</Text>
           </View>
           <Text style={styles.header_paragraph}>
