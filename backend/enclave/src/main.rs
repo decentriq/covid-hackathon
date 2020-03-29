@@ -307,6 +307,10 @@ impl hyper::server::Handler for EnclaveHandler {
                         }
                     }
                 }
+                (&hyper::Get, "/report") => {
+                    *res.status_mut() = hyper::Ok;
+                    res.send(self.report.as_ref()).unwrap();
+                }
                 _ => {
                     *res.status_mut() = hyper::NotFound;
                     res.start().unwrap();
