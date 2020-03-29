@@ -10,7 +10,6 @@ import {
 import {StackNavigationProp} from '@react-navigation/stack';
 import {OnboardingIntroNavigatorParamList} from '../../navigations/onboarding-navigator';
 import {Colors} from '../../styles';
-import Counter from '../../components/counter2';
 
 type IntroScreenNavigationProp = StackNavigationProp<
   OnboardingIntroNavigatorParamList,
@@ -27,7 +26,6 @@ export const IntroScreen = ({navigation}: IntroProps) => {
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Counter fontSize={10} />
           <Text style={styles.h1}>Cocotrace</Text>
           <View style={styles.subtitle}>
             <Text style={styles.h2}>Location tracing done</Text>

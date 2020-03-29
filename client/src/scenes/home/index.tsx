@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, Text, Button}  from 'react-native';
+import {SafeAreaView, Text, Button} from 'react-native';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {HomeNavigatorParamList} from '../../navigations/home-navigator';
 import BackgroundGeolocation, {
@@ -12,7 +12,7 @@ import BackgroundGeolocation, {
 } from 'react-native-background-geolocation';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../store';
-import {addLocation, deleteLocations} from '../../store/traces/actions'
+import {addLocation, deleteLocations} from '../../store/traces/actions';
 
 type StatusScreenNavigationProp = BottomTabNavigationProp<
   HomeNavigatorParamList,
@@ -25,38 +25,21 @@ type MyStatusProps = {
 type StatusProps = StatusPropsFromRedux & MyStatusProps;
 type StatusState = {};
 
-export class StatusScreen extends React.Component<StatusProps, StatusState> {
+class StatusScreenPrivate extends React.Component<StatusProps, StatusState> {
   state: StatusState = {};
 
   constructor(props: StatusProps) {
     super(props);
-    BackgroundGeolocation.onLocation(this.onLocation,
-       this.onError);
-    BackgroundGeolocation.onMotionChange(this.onMotionChange);
-    BackgroundGeolocation.onActivityChange(this.onActivityChange);
-    BackgroundGeolocation.onProviderChange(this.onProviderChange);
-    BackgroundGeolocation.onHeartbeat(this.onHeartbeat);
+    // BackgroundGeolocation.onLocation(l => this.onLocation(l), this.onError);
   }
 
   onLocation(location: Location) {
     console.log('[location] -', location);
     // console.log(this.props)
-    // this.props.addLocation(location)
+    this.props.addLocation(location);
   }
   onError(error: LocationError) {
     console.warn('[location] ERROR -', error);
-  }
-  onActivityChange(event: MotionActivityEvent) {
-    console.log('[activitychange] -', event); // eg: 'on_foot', 'still', 'in_vehicle'
-  }
-  onProviderChange(provider: ProviderChangeEvent) {
-    console.log('[providerchange] -', provider.enabled, provider.status);
-  }
-  onMotionChange(event: MotionChangeEvent) {
-    console.log('[motionchange] -', event.isMoving, event.location);
-  }
-  onHeartbeat(event: HeartbeatEvent) {
-    console.log('[heartbeat] -', event.location);
   }
 
   componentDidMount() {
@@ -64,10 +47,12 @@ export class StatusScreen extends React.Component<StatusProps, StatusState> {
     BackgroundGeolocation.ready(
       {
         distanceFilter: 10,
-        stopOnTerminate: false,
         logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+        stopOnTerminate: false,
+        startOnBoot: true,
         debug: false,
       },
+
       state => {
         console.log(
           '- BackgroundGeolocation is configured and ready: ',
@@ -84,7 +69,7 @@ export class StatusScreen extends React.Component<StatusProps, StatusState> {
   }
 
   componentWillUnmount() {
-    BackgroundGeolocation.removeListeners();
+    // BackgroundGeolocation.removeListeners();
   }
 
   render() {
@@ -102,23 +87,14 @@ const mapState = (state: RootState) => ({
   counter: state.counter.value,
 });
 
-// const mapDispatch = { addLocation: (location: any) => ({
-//     type: 'ADD_LOCATION',
-//     payload: location
-//   }),
-//   // deleteLocation: () => deleteLocations(),
-// };
-
 const mapDispatch = {
   incrementClick: () => ({type: 'INCREMENT'}),
+  addLocation: (l: any) => addLocation(l),
 };
-
-
 
 type StatusPropsFromRedux = ConnectedProps<typeof connector>;
 const connector = connect(mapState, mapDispatch);
-export default connector(StatusScreen);
-
+export const StatusScreen = connector(StatusScreenPrivate);
 
 type AboutScreenNavigationProp = BottomTabNavigationProp<
   HomeNavigatorParamList,
