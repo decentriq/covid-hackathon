@@ -20,10 +20,10 @@ use sgx_isa::Report;
 use sgx_isa::Targetinfo;
 use nav_types::{ WGS84, ECEF };
 use kdtree::KdTree;
+use chily::*;
 
 type UserId = String;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-type Keypair = ();
 
 struct Configuration {
     // The time distance under which a point is considered exposed wrt an infected point.
@@ -136,19 +136,29 @@ impl EnclaveHandler {
         }
     }
 
-    fn decrypt<R: Read>(_keypair: Keypair, reader: R) -> R {
-        warn!("TODO decrypt");
-        reader
+    fn decrypt(&self, client_key: &PublicKey, input: Vec<u8>) -> Vec<u8> {
+        let cipher = Cipher::new(&self.keypair.secret, client_key);
+        let nonce: Nonce = input.as_slice().into();
+        let encrypted_content = &input[24..];
+        cipher.decrypt(encrypted_content, &nonce)
     }
 
-    fn encrypt(_keypair: Keypair, input: Vec<u8>) -> Vec<u8> {
-        warn!("TODO encrypt");
-        input
+    fn encrypt(&self, client_key: &PublicKey, input: Vec<u8>) -> Vec<u8> {
+        let cipher = Cipher::new(&self.keypair.secret, client_key);
+        let nonce = Nonce::from_random();
+        let encrypted_content = cipher.encrypt(&input, &nonce);
+        // TODO add nonce at the beginning
+        encrypted_content
     }
 
     fn handle_poll(&self, req: &mut Request) -> Result<Vec<u8>> {
-        let decrypted = EnclaveHandler::decrypt(self.keypair, req);
-        let mut poll_request: PollRequest = serde_json::from_reader(decrypted)?;
+        let mut body_content = vec![];
+        req.read_to_end(&mut body_content);
+        // TODO: extract from header
+        let mut client_pubkey_buf: [u8; 32] = [0; 32];
+        let client_pubkey: PublicKey = client_pubkey_buf.into();
+        let decrypted = self.decrypt(&client_pubkey, body_content);
+        let mut poll_request: PollRequest = serde_json::from_slice(&decrypted)?;
         let poll_response = {
             let mut guard = self.state.lock().unwrap();
             EnclaveHandler::insert_new_points(guard.borrow_mut(), &poll_request);
@@ -157,7 +167,7 @@ impl EnclaveHandler {
         };
         info!("Poll response {:?}", poll_response);
         let serialized_response = serde_json::to_vec(&poll_response).unwrap();
-        let encrypted = EnclaveHandler::encrypt(self.keypair, serialized_response);
+        let encrypted = self.encrypt(&client_pubkey, serialized_response);
         Ok(encrypted)
     }
 
@@ -327,21 +337,23 @@ impl hyper::server::Handler for EnclaveHandler {
 fn main() {
     setup_logging();
     let keypair = generate_keypair();
-    let report = create_report(keypair);
+    let report = create_report(&keypair);
     let enclave_handler = EnclaveHandler::new(keypair, report);
     let _listening = hyper::Server::http("[::]:3000").unwrap().handle(enclave_handler);
     println!("Listening on http://[::]:3000");
 }
 
-fn create_report(keypair: Keypair) -> Report {
+fn create_report(keypair: &Keypair) -> Report {
     let target_info = Targetinfo::default();
     warn!("TODO create_report fill report_data");
-    let report_data = [0; 64];
+    let mut report_data: [u8; 64] = [0; 64];
+    let public_key_bytes = keypair.public.as_bytes();
+    &report_data[..public_key_bytes.len()].copy_from_slice(public_key_bytes);
     Report::for_target(&target_info, &report_data)
 }
 
 fn generate_keypair() -> Keypair {
-    warn!("TODO generate_keypair");
+    Keypair::generate()
 }
 
 fn setup_logging() {
