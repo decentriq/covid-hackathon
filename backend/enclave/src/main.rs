@@ -2,6 +2,9 @@ use hyper::server::Request;
 use hyper::server::Response;
 use std::io::Read;
 use std::collections::{HashMap};
+use std::fmt;
+use std::str;
+use hyper::header::{Header, HeaderFormat};
 use hyper::uri::RequestUri::AbsolutePath;
 use hyper::net::Fresh;
 use std::sync::Arc;
@@ -120,6 +123,37 @@ struct PollResponse {
     exposed_timestamp: Option<DateTime<Utc>>,
 }
 
+#[derive(Debug, Clone, Copy)]
+struct ClientPubkey(PublicKey);
+
+impl Header for ClientPubkey {
+    fn header_name() -> &'static str {
+        "ClientPubkey"
+    }
+
+    fn parse_header(raw: &[Vec<u8>]) -> hyper::Result<ClientPubkey> {
+        if raw.len() == 1 {
+            let line = &raw[0];
+            match str::from_utf8(&line) {
+                Ok(base64_str) => {
+                    let bytes = base64::decode(base64_str).unwrap();
+                    let mut sized_buf: [u8; 32] = [0; 32];
+                    sized_buf.copy_from_slice(&bytes[0..32]);
+                    return Ok(ClientPubkey(sized_buf.into()));
+                },
+                Err(err) => ()
+            }
+        }
+        Err(hyper::Error::Header)
+    }
+}
+
+impl HeaderFormat for ClientPubkey {
+    fn fmt_header(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        unimplemented!()
+    }
+}
+
 impl EnclaveHandler {
     fn new(keypair: Keypair, report: Report) -> EnclaveHandler {
         let state = EnclaveState {
@@ -155,10 +189,8 @@ impl EnclaveHandler {
     fn handle_poll(&self, req: &mut Request) -> Result<Vec<u8>> {
         let mut body_content = vec![];
         req.read_to_end(&mut body_content)?;
-        // TODO: extract from header
-        let mut client_pubkey_buf: [u8; 32] = [0; 32];
-        let client_pubkey: PublicKey = client_pubkey_buf.into();
-        let decrypted = self.decrypt(&client_pubkey, body_content);
+        let client_pubkey_header: &ClientPubkey = req.headers.get().ok_or("Header not found")?;
+        let decrypted = self.decrypt(&client_pubkey_header.0, body_content);
         let mut poll_request: PollRequest = serde_json::from_slice(&decrypted)?;
         let poll_response = {
             let mut guard = self.state.lock().unwrap();
@@ -168,7 +200,7 @@ impl EnclaveHandler {
         };
         info!("Poll response {:?}", poll_response);
         let serialized_response = serde_json::to_vec(&poll_response).unwrap();
-        let encrypted = self.encrypt(&client_pubkey, serialized_response);
+        let encrypted = self.encrypt(&client_pubkey_header.0, serialized_response);
         Ok(encrypted)
     }
 

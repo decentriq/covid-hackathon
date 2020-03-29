@@ -17,3 +17,4 @@ geographiclib = "0.1.0"
 kdtree = { path = "../kdtree-rs" }
 nav-types = "0.4.4"
 chily = { path = "../../chily" }
+base64 = "0.12.0"
