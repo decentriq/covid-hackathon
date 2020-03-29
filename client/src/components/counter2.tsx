@@ -1,7 +1,7 @@
 import React from 'react';
-import {SafeAreaView, Text, Button}  from 'react-native';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {HomeNavigatorParamList} from '../../navigations/home-navigator';
+import {Text, Button, View} from 'react-native';
+import {connect, ConnectedProps} from 'react-redux';
+import {RootState} from '../store';
 import BackgroundGeolocation, {
   Location,
   LocationError,
@@ -10,37 +10,34 @@ import BackgroundGeolocation, {
   MotionChangeEvent,
   ProviderChangeEvent,
 } from 'react-native-background-geolocation';
-import {connect, ConnectedProps} from 'react-redux';
-import {RootState} from '../../store';
-import {addLocation, deleteLocations} from '../../store/traces/actions'
 
-type StatusScreenNavigationProp = BottomTabNavigationProp<
-  HomeNavigatorParamList,
-  'Status'
->;
 
-type MyStatusProps = {
-  navigation: StatusScreenNavigationProp;
+type MyProps = {
+  fontSize: number;
 };
-type StatusProps = StatusPropsFromRedux & MyStatusProps;
-type StatusState = {};
+type Props = PropsFromRedux & MyProps;
 
-export class StatusScreen extends React.Component<StatusProps, StatusState> {
-  state: StatusState = {};
+type CounterState = {
+  interval: number | null;
+};
 
-  constructor(props: StatusProps) {
+export class Counter extends React.Component<Props, CounterState> {
+  state: CounterState = {
+    interval: null,
+  };
+  constructor(props: Props) {
     super(props);
-    BackgroundGeolocation.onLocation(this.onLocation,
-       this.onError);
+    BackgroundGeolocation.onLocation(this.props.addLocation, this.onError);
     BackgroundGeolocation.onMotionChange(this.onMotionChange);
     BackgroundGeolocation.onActivityChange(this.onActivityChange);
     BackgroundGeolocation.onProviderChange(this.onProviderChange);
     BackgroundGeolocation.onHeartbeat(this.onHeartbeat);
+    this.onLocation = this.onLocation.bind(this)
   }
 
   onLocation(location: Location) {
     console.log('[location] -', location);
-    // console.log(this.props)
+    console.log(this.props)
     // this.props.addLocation(location)
   }
   onError(error: LocationError) {
@@ -88,12 +85,14 @@ export class StatusScreen extends React.Component<StatusProps, StatusState> {
   }
 
   render() {
-    const {counter, incrementClick} = this.props;
+    const {counter, incrementClick, fontSize, addLocation} = this.props;
+
     return (
-      <SafeAreaView>
-        <Text>Screen: Status</Text>
+      <View>
+        <Text style={{fontSize}}>{counter}</Text>
         <Button onPress={() => incrementClick()} title="Increment Me!" />
-      </SafeAreaView>
+        <Button onPress={() => addLocation("sadsa")} title="Increment Message!" />
+      </View>
     );
   }
 }
@@ -102,35 +101,14 @@ const mapState = (state: RootState) => ({
   counter: state.counter.value,
 });
 
-// const mapDispatch = { addLocation: (location: any) => ({
-//     type: 'ADD_LOCATION',
-//     payload: location
-//   }),
-//   // deleteLocation: () => deleteLocations(),
-// };
-
 const mapDispatch = {
   incrementClick: () => ({type: 'INCREMENT'}),
+  addLocation: (location: any) => ({
+        type: 'ADD_LOCATION',
+        payload: location
+      }),
 };
 
-
-
-type StatusPropsFromRedux = ConnectedProps<typeof connector>;
+type PropsFromRedux = ConnectedProps<typeof connector>;
 const connector = connect(mapState, mapDispatch);
-export default connector(StatusScreen);
-
-
-type AboutScreenNavigationProp = BottomTabNavigationProp<
-  HomeNavigatorParamList,
-  'About'
->;
-
-type AboutPropos = {
-  navigation: AboutScreenNavigationProp;
-};
-
-export const AboutScreen = ({navigation}: AboutPropos) => (
-  <SafeAreaView>
-    <Text>Screen: About</Text>
-  </SafeAreaView>
-);
+export default connector(Counter);

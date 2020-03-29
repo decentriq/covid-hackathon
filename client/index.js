@@ -1,9 +1,36 @@
-/**
- * @format
- */
-
 import {AppRegistry} from 'react-native';
 import App from './src/App';
 import {name as appName} from './app.json';
+import BackgroundFetch from 'react-native-background-fetch';
+import BackgroundGeolocation from 'react-native-background-geolocation';
+
+
+// BackgroundGeolocation.onLocation(
+//     async (location) => {
+//         location.timestamp = moment(location.timestamp).valueOf();
+//         await insertDB(location);
+//     }, (error) => {
+//         onError({ error });
+//     }
+//     );
+    
+// const BackgroundFetchHeadlessTask = async (event) => {
+//     try {
+//         const { taskId } = event;
+//         console.log('[BackgroundFetch HeadlessTask] start: ', taskId);
+        
+//         await checkSickPeople();
+        
+//         BackgroundFetch.finish(taskId);
+//     } catch (error) {
+//         onError({ error });
+//     }
+// };
+
+// const BackgroundGeolocationHeadlessTask = async (event, params) => {
+//     console.log('[BackgroundGeolocation HeadlessTask] -', event.name, params);
+// };
 
 AppRegistry.registerComponent(appName, () => App);
+// BackgroundFetch.registerHeadlessTask(BackgroundFetchHeadlessTask);
+// BackgroundGeolocation.registerHeadlessTask(BackgroundGeolocationHeadlessTask);

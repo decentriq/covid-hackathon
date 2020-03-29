@@ -6,3 +6,4 @@ node_modules/
 result
 **/*.o
 .DS_Store
+client/rust_native/librust_native.a

@@ -10,7 +10,7 @@ import {
 import {StackNavigationProp} from '@react-navigation/stack';
 import {OnboardingIntroNavigatorParamList} from '../../navigations/onboarding-navigator';
 import {Colors} from '../../styles';
-import Counter from '../../components/counter';
+import Counter from '../../components/counter2';
 
 type IntroScreenNavigationProp = StackNavigationProp<
   OnboardingIntroNavigatorParamList,

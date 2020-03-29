@@ -22,11 +22,11 @@ export class Counter extends React.Component<Props, CounterState> {
   }
 
   componentDidMount() {
-    this.state.interval = setInterval(() => this.props.incrementClick(), 1000);
+    // this.state.interval = setInterval(() => this.props.incrementClick(), 1000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.interval!);
+    // clearInterval(this.state.interval!);
   }
 
   render() {
