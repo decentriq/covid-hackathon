@@ -13,18 +13,19 @@ type State = {
   name: string,
 }
 
-export default class RustNative extends React.Component<Props, State> {
+export class RustNative extends React.Component<Props, State> {
   state: State = {
     name: "",
   }
 
   componentDidMount() {
-    displayHelloWorld(this)
+    this.displayHelloWorld().then((val) => 
+      this.setState({
+        name: val
+      }));
   }
 
-
   render() {
-
     return (
       <Text>
         {this.state.name}
@@ -32,20 +33,17 @@ export default class RustNative extends React.Component<Props, State> {
       </Text>
     )
   }
-}
 
-
-async function displayHelloWorld (self: any) {
-  try {
-    console.log("triggered rust callback")
-    let text = await NativeModules.MobileAppBridge.sayHelloWorld("Android")
-    console.log(test)
-    self.setState({
-      hello: text
-    })
-  } catch (e) {
-      console.log(e)
+  async displayHelloWorld(): Promise<string> {
+    try {
+      console.log("triggered rust callback")
+      let text = await NativeModules.MobileAppBridge.sayHelloWorld("Android")
+      return text;
+    } catch (e) {
+      return Promise.reject("failed to get data for native");
+    }
   }
 }
+
 
 

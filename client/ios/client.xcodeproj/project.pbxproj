@@ -18,12 +18,12 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* clientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* clientTests.m */; };
 		3B199618242EC0E300A64F6B /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B199617242EC0E300A64F6B /* RNBackgroundFetch+AppDelegate.m */; };
+		3BEE15072430B78B00574C73 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AAD18DA24307D8000379FA5 /* libresolv.tbd */; };
+		3BEE15082430B7CF00574C73 /* librust_native.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AAD18E724308FB900379FA5 /* librust_native.a */; };
 		9A21B4CF242FE130008548F3 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A21B4CE242FE130008548F3 /* File.swift */; };
-		9AAD18DB24307D8000379FA5 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AAD18DA24307D8000379FA5 /* libresolv.tbd */; };
 		9AAD18DF2430880500379FA5 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAD18DE2430880500379FA5 /* String.swift */; };
 		9AAD18E12430887A00379FA5 /* MobileAppBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AAD18E02430887A00379FA5 /* MobileAppBridge.swift */; };
 		9AAD18E32430894E00379FA5 /* MobileAppBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AAD18E22430894E00379FA5 /* MobileAppBridge.m */; };
-		9AAD18E824308FB900379FA5 /* librust_native.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AAD18E724308FB900379FA5 /* librust_native.a */; };
 		AB06DC37DC21EB7AD621BB49 /* libPods-client-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 175EE20A94DA7935E1D8B1DA /* libPods-client-tvOSTests.a */; };
 		D289063D516C14DEE3FCB12B /* libPods-client-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F86AA3C5CAF4BB16CA22E38 /* libPods-client-tvOS.a */; };
 		F7320558A678C72C287763F9 /* libPods-clientTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BED25CFE7D07116F4C20E7D /* libPods-clientTests.a */; };
@@ -98,8 +98,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9AAD18E824308FB900379FA5 /* librust_native.a in Frameworks */,
-				9AAD18DB24307D8000379FA5 /* libresolv.tbd in Frameworks */,
+				3BEE15082430B7CF00574C73 /* librust_native.a in Frameworks */,
+				3BEE15072430B78B00574C73 /* libresolv.tbd in Frameworks */,
 				034207F4EA06844168B9DE65 /* libPods-client.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -721,6 +721,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = VJ8592T25A;
+				ENABLE_BITCODE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -813,6 +814,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VJ8592T25A;
+				ENABLE_BITCODE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",

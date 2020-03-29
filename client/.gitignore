@@ -62,3 +62,4 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+/rust_native/librust_native.a
