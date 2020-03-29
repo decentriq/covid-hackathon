@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, Button, View} from 'react-native';
 import {connect, ConnectedProps} from 'react-redux';
-import {RootState} from '../reducers';
+import {RootState} from '../store';
 
 type MyProps = {
   fontSize: number;

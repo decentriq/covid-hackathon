@@ -5,7 +5,7 @@ import RootNavigator from './navigations';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 
-import {rootReducer} from './reducers';
+import {rootReducer} from './store';
 
 const store = createStore(rootReducer);
 
