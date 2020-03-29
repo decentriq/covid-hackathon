@@ -54,8 +54,25 @@ impl Default for Configuration {
 #[derive(Debug)]
 struct User {
     gps_track: Vec<TimestampedCoordinate>,
-    infected_time: Option<DateTime<Utc>>,
+    illnesses: Vec<Illness>,
     exposure_time: Option<DateTime<Utc>>
+}
+
+impl User {
+    pub fn was_ill_at(&self, time: &DateTime<Utc>) -> bool {
+        for illness in &self.illnesses {
+            if illness.start_time < *time {
+                match illness.duration_days {
+                    None => return true,
+                    Some(duration_days) =>
+                        if *time - illness.start_time < Duration::days(duration_days) {
+                            return true;
+                        }
+                }
+            }
+        }
+        return false;
+    }
 }
 
 #[derive(Debug)]
@@ -74,6 +91,14 @@ struct EnclaveHandler {
 #[derive(Debug)]
 #[derive(Serialize, Deserialize)]
 #[derive(Clone)]
+struct Illness {
+    start_time: DateTime<Utc>,
+    duration_days: Option<i64> // none = ongoing
+}
+
+#[derive(Debug)]
+#[derive(Serialize, Deserialize)]
+#[derive(Clone)]
 struct TimestampedCoordinate {
     timestamp: DateTime<Utc>,
     // WGS-84 coordinates
@@ -85,7 +110,7 @@ struct TimestampedCoordinate {
 #[derive(Serialize, Deserialize)]
 struct PollRequest {
     user_id: UserId,
-    infected_time: Option<DateTime<Utc>>,
+    illnesses: Vec<Illness>,
     timestamped_coordinates: Vec<TimestampedCoordinate>,
 }
 
@@ -189,39 +214,39 @@ impl EnclaveHandler {
         let time_limit = configuration.exposure_time_distance;
         let mut exposure_times: HashMap<UserId, DateTime<Utc>> = HashMap::new();
         for ( user_id, user ) in &state.users {
-            if let Some(infected_time) = user.infected_time {
-                let infection_start = infected_time - configuration.infectious_period;
-                for entry in &user.gps_track {
-                    if entry.timestamp < infection_start {
-                        // This entry was before the user was infectious.
-                        continue;
-                    }
+            if user.illnesses.is_empty() {
+                continue;
+            }
 
-                    // Find people who were exposed.
-                    let pos = WGS84::new(entry.x as f64, entry.y as f64, 0.0);
-                    let ecef_pos = ECEF::from(pos);
+            for entry in &user.gps_track {
+                if !user.was_ill_at(&entry.timestamp) {
+                    continue;
+                }
 
-                    let range_min: [f64; 4] = [
-                        ecef_pos.x() - space_limit,
-                        ecef_pos.y() - space_limit,
-                        ecef_pos.z() - space_limit,
-                        (entry.timestamp - time_limit).timestamp() as f64
-                    ];
+                // Find people who were exposed.
+                let pos = WGS84::new(entry.x as f64, entry.y as f64, 0.0);
+                let ecef_pos = ECEF::from(pos);
 
-                    let range_max: [f64; 4] = [
-                        ecef_pos.x() + space_limit,
-                        ecef_pos.y() + space_limit,
-                        ecef_pos.z() + space_limit,
-                        (entry.timestamp + time_limit).timestamp() as f64
-                    ];
+                let range_min: [f64; 4] = [
+                    ecef_pos.x() - space_limit,
+                    ecef_pos.y() - space_limit,
+                    ecef_pos.z() - space_limit,
+                    (entry.timestamp - time_limit).timestamp() as f64
+                ];
 
-                    for other_user_id in kdtree.in_range(&range_min, &range_max) {
-                        match exposure_times.get_mut(*other_user_id) {
-                            None => { exposure_times.insert(other_user_id.to_string(), entry.timestamp); },
-                            Some(cur_exposure_time) => {
-                                if entry.timestamp < *cur_exposure_time {
-                                    *cur_exposure_time = entry.timestamp;
-                                }
+                let range_max: [f64; 4] = [
+                    ecef_pos.x() + space_limit,
+                    ecef_pos.y() + space_limit,
+                    ecef_pos.z() + space_limit,
+                    (entry.timestamp + time_limit).timestamp() as f64
+                ];
+
+                for other_user_id in kdtree.in_range(&range_min, &range_max) {
+                    match exposure_times.get_mut(*other_user_id) {
+                        None => { exposure_times.insert(other_user_id.to_string(), entry.timestamp); },
+                        Some(cur_exposure_time) => {
+                            if entry.timestamp > *cur_exposure_time {
+                                *cur_exposure_time = entry.timestamp;
                             }
                         }
                     }
@@ -242,7 +267,7 @@ impl EnclaveHandler {
         info!("Inserting new points of {}", request.user_id);
         match state.users.get_mut(&request.user_id) {
             Some(user) => {
-                user.infected_time = request.infected_time;
+                user.illnesses = request.illnesses.clone();
                 for timestamped_coordinate in &request.timestamped_coordinates {
                     user.gps_track.push(timestamped_coordinate.clone());
                 }
@@ -250,7 +275,7 @@ impl EnclaveHandler {
             None => {
                 info!("Creating new user {}", request.user_id);
                 state.users.insert(request.user_id.clone(), User {
-                    infected_time: request.infected_time,
+                    illnesses: request.illnesses.clone(),
                     exposure_time: None,
                     gps_track: request.timestamped_coordinates.clone()
                 });
