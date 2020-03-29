@@ -1,32 +1,28 @@
 import React from 'react';
-import {
-  Text,
-} from 'react-native';
+import {Text, Button, View} from 'react-native';
+import {connect, ConnectedProps} from 'react-redux';
+import {RootState} from '../reducers';
 
-type CounterProps = {
-  color: string,
-  size: number
-}
+type MyProps = {
+  fontSize: number;
+};
+type Props = PropsFromRedux & MyProps;
 
 type CounterState = {
-  count: number,
-  interval: number | null
-}
+  interval: number | null;
+};
 
-export class Counter extends React.Component<CounterProps, CounterState> {
+export class Counter extends React.Component<Props, CounterState> {
   state: CounterState = {
-    count: 0,
-    interval: null
-  }
+    interval: null,
+  };
 
-  constructor(props: CounterProps) {
-    super(props)
+  constructor(props: Props) {
+    super(props);
   }
 
   componentDidMount() {
-    this.state.interval = setInterval(() => {
-      this.setState({count: this.state.count + 1})
-    }, 1000)
+    this.state.interval = setInterval(() => this.props.incrementClick(), 1000);
   }
 
   componentWillUnmount() {
@@ -34,13 +30,25 @@ export class Counter extends React.Component<CounterProps, CounterState> {
   }
 
   render() {
-    const {count} = this.state
-    const {color, size} = this.props
+    const {counter, incrementClick, fontSize} = this.props;
 
     return (
-      <Text style={{color, fontSize: size}}>
-        {count}
-      </Text>
-    )
+      <View>
+        <Text style={{fontSize}}>{counter}</Text>
+        <Button onPress={() => incrementClick()} title="Increment Me!" />
+      </View>
+    );
   }
 }
+
+const mapState = (state: RootState) => ({
+  counter: state.counter.value,
+});
+
+const mapDispatch = {
+  incrementClick: () => ({type: 'INCREMENT'}),
+};
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+const connector = connect(mapState, mapDispatch);
+export default connector(Counter);

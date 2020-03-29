@@ -1,10 +1,7 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  Text,
-} from 'react-native';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { HomeNavigatorParamList } from "../../navigations/home-navigator"
+import {SafeAreaView, Text} from 'react-native';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {HomeNavigatorParamList} from '../../navigations/home-navigator';
 import BackgroundGeolocation, {
   Location,
   LocationError,
@@ -12,7 +9,7 @@ import BackgroundGeolocation, {
   MotionActivityEvent,
   MotionChangeEvent,
   ProviderChangeEvent,
-} from "react-native-background-geolocation";
+} from 'react-native-background-geolocation';
 
 type StatusScreenNavigationProp = BottomTabNavigationProp<
   HomeNavigatorParamList,
@@ -20,18 +17,16 @@ type StatusScreenNavigationProp = BottomTabNavigationProp<
 >;
 
 type StatusProps = {
-  navigation: StatusScreenNavigationProp,
+  navigation: StatusScreenNavigationProp;
 };
 
-type StatusState = {
-}
+type StatusState = {};
 
 export class StatusScreen extends React.Component<StatusProps, StatusState> {
-  state: StatusState = {
-  }
+  state: StatusState = {};
 
   constructor(props: StatusProps) {
-    super(props)
+    super(props);
     BackgroundGeolocation.onLocation(this.onLocation, this.onError);
     BackgroundGeolocation.onMotionChange(this.onMotionChange);
     BackgroundGeolocation.onActivityChange(this.onActivityChange);
@@ -46,7 +41,7 @@ export class StatusScreen extends React.Component<StatusProps, StatusState> {
     console.warn('[location] ERROR -', error);
   }
   onActivityChange(event: MotionActivityEvent) {
-    console.log('[activitychange] -', event);  // eg: 'on_foot', 'still', 'in_vehicle'
+    console.log('[activitychange] -', event); // eg: 'on_foot', 'still', 'in_vehicle'
   }
   onProviderChange(provider: ProviderChangeEvent) {
     console.log('[providerchange] -', provider.enabled, provider.status);
@@ -59,21 +54,27 @@ export class StatusScreen extends React.Component<StatusProps, StatusState> {
   }
 
   componentDidMount() {
-    console.log("Home mounted");
-    BackgroundGeolocation.ready({
-      distanceFilter: 10,
-      stopOnTerminate: false,
-      logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      debug: false
-    }, (state) => {
-      console.log("- BackgroundGeolocation is configured and ready: ", state.enabled);
+    console.log('Home mounted');
+    BackgroundGeolocation.ready(
+      {
+        distanceFilter: 10,
+        stopOnTerminate: false,
+        logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+        debug: false,
+      },
+      state => {
+        console.log(
+          '- BackgroundGeolocation is configured and ready: ',
+          state.enabled,
+        );
 
-      if (!state.enabled) {
-        BackgroundGeolocation.start(function() {
-          console.log("- Start success");
-        });
-      }
-    });
+        if (!state.enabled) {
+          BackgroundGeolocation.start(function() {
+            console.log('- Start success');
+          });
+        }
+      },
+    );
   }
 
   componentWillUnmount() {
@@ -81,12 +82,11 @@ export class StatusScreen extends React.Component<StatusProps, StatusState> {
   }
 
   render() {
-
     return (
       <SafeAreaView>
         <Text>Screen: Status</Text>
       </SafeAreaView>
-    )
+    );
   }
 }
 

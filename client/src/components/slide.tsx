@@ -3,8 +3,6 @@ import {View, Text, StyleSheet, Image, ImageSourcePropType} from 'react-native';
 import LottieView from 'lottie-react-native';
 import {Colors} from '../styles';
 
-
-
 type SlideProps = {
   backgroundColorTop: string;
   backgroundColorBot: string;
@@ -69,7 +67,7 @@ export class Slide extends React.Component<SlideProps, SlideState> {
             {lottieSrc && (
               <LottieView
                 style={styles.slide_image}
-                source={lottieSrc as any as AnimationObjectPropType}
+                source={(lottieSrc as any) as AnimationObjectPropType}
                 resizeMode="cover"
                 autoPlay
                 loop={true}
