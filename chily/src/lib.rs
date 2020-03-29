@@ -13,13 +13,13 @@ pub use x25519_dalek::StaticSecret;
 use rand::CryptoRng;
 use rand::Rng;
 
-use chacha20poly1305::aead::{generic_array::GenericArray, Aead, NewAead};
-
-use chacha20poly1305::{Tag, XChaCha20Poly1305};
+use xsalsa20poly1305::aead::{generic_array::GenericArray, Aead, NewAead};
+use xsalsa20poly1305::{Tag, XSalsa20Poly1305};
+use salsa20::hsalsa20;
 use std::convert::From;
 
 pub struct Nonce {
-    pub bytes: GenericArray<u8, <chacha20poly1305::XChaCha20Poly1305 as Aead>::NonceSize>,
+    pub bytes: GenericArray<u8, <xsalsa20poly1305::XSalsa20Poly1305 as Aead>::NonceSize>,
 }
 
 impl From<&[u8]> for Nonce {
@@ -76,12 +76,16 @@ impl Keypair {
     }
 }
 
-pub struct Cipher(XChaCha20Poly1305);
+pub struct Cipher(XSalsa20Poly1305);
 
 impl Cipher {
     pub fn new(my_secret_key: &StaticSecret, their_pub_key: &PublicKey) -> Cipher {
         let shared_secret = my_secret_key.diffie_hellman(&their_pub_key);
-        let aead = XChaCha20Poly1305::new(GenericArray::clone_from_slice(shared_secret.as_bytes()));
+        let key = hsalsa20(
+            &GenericArray::clone_from_slice(shared_secret.as_bytes()),
+            &GenericArray::default(),
+        );
+        let aead = XSalsa20Poly1305::new(key);
         Cipher(aead)
     }
 
