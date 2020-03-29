@@ -147,13 +147,14 @@ impl EnclaveHandler {
         let cipher = Cipher::new(&self.keypair.secret, client_key);
         let nonce = Nonce::from_random();
         let encrypted_content = cipher.encrypt(&input, &nonce);
-        // TODO add nonce at the beginning
-        encrypted_content
+        let mut complete = nonce.bytes.to_vec();
+        complete.extend(encrypted_content);
+        complete
     }
 
     fn handle_poll(&self, req: &mut Request) -> Result<Vec<u8>> {
         let mut body_content = vec![];
-        req.read_to_end(&mut body_content);
+        req.read_to_end(&mut body_content)?;
         // TODO: extract from header
         let mut client_pubkey_buf: [u8; 32] = [0; 32];
         let client_pubkey: PublicKey = client_pubkey_buf.into();
