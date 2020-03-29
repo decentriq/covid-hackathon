@@ -9,8 +9,6 @@ const initialState: CounterState = {
 };
 
 export function counterReducer(state = initialState, action: any): any {
-  console.log(action);
-  console.log(state);
   switch (action.type) {
     case 'INCREMENT':
       return {value: state.value + 1};

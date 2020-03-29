@@ -3,11 +3,12 @@ import React from 'react';
 import {SafeAreaView, StyleSheet, View, StatusBar} from 'react-native';
 import RootNavigator from './navigations';
 import {createStore, applyMiddleware} from 'redux';
-import {Provider, connect} from 'react-redux';
+import {Provider} from 'react-redux';
+import logger from 'redux-logger';
 
 import {rootReducer} from './store';
 
-const store = createStore(rootReducer);
+export const store = createStore(rootReducer, applyMiddleware(logger));
 
 const App = () => {
   return (
