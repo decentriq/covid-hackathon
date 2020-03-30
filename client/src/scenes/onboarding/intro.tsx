@@ -79,7 +79,7 @@ export const IntroScreen = ({navigation}: IntroProps) => {
             underlayColor={Colors.DARK_ORANGE}
             style={styles.button}
             onPress={() => navigation.navigate('Completed')}>
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <Text style={styles.buttonText}>Start Tracking</Text>
           </TouchableHighlight>
         </View>
       </View>

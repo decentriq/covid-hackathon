@@ -13,7 +13,7 @@ import BackgroundGeolocation, {
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../store';
 import {addLocation, deleteLocations} from '../../store/traces/actions';
-import LocationComponent from '../../components/location';
+import StatusComponent from '../../components/status';
 
 type StatusScreenNavigationProp = BottomTabNavigationProp<
   HomeNavigatorParamList,
@@ -78,7 +78,7 @@ class StatusScreenPrivate extends React.Component<StatusProps, StatusState> {
     return (
       <SafeAreaView>
         <Text>Screen: Status</Text>
-        <LocationComponent />
+        <StatusComponent />
         {/* <Button onPress={() => incrementClick()} title="Increment Me!" /> */}
       </SafeAreaView>
     );

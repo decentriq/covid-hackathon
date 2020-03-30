@@ -72,7 +72,7 @@ const SLIDES_CONTENT = {
     backgroundColorBot: Colors.LIGHT_ORANGE,
   },
   two: {
-    imageSrc: require('../../assets/images/avato.png'),
+    lottieSrc: require('../../assets/lottie/lf20_aPomb3.json'),
     textTop: 'Some text top',
     textBot: 'Some text bot',
     backgroundColorTop: Colors.EXTRA_LIGHT_BLUE,
