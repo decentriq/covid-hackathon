@@ -71,8 +71,8 @@ class StatusComponent extends React.Component<Props, State> {
     // illness: current state of illness
     const timestamped_coors = locations.map(l => ({
       timestamp: l.timestamp,
-      x: l.coords.longitude,
-      y: l.coords.latitude,
+      x: l.coords.latitude,
+      y: l.coords.longitude,
     }));
 
     // console.log('INFO - TimestampedCoordinate: ' + timestamped_coors);
