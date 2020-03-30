@@ -1,1 +1,1 @@
-declare module "react-native-randombytes";
+declare module 'react-native-randombytes';

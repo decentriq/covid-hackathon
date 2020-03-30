@@ -1,4 +1,4 @@
-export type Location = any;
+import {Location} from 'react-native-background-geolocation';
 
 export type LocationStore = {
   locations: Location[];

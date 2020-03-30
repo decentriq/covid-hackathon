@@ -1,9 +1,5 @@
-import {
-  Location,
-  ADD_LOCATION,
-  DELETE_LOCATIONS,
-  LocationActionTypes,
-} from './types';
+import {Location} from 'react-native-background-geolocation';
+import {ADD_LOCATION, DELETE_LOCATIONS, LocationActionTypes} from './types';
 
 export function addLocation(location: Location): LocationActionTypes {
   return {

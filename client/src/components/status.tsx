@@ -1,11 +1,23 @@
 import React from 'react';
-import {Text, Button, View, ScrollView} from 'react-native';
+import {
+  Text,
+  Button,
+  View,
+  ScrollView,
+  DatePickerIOSComponent,
+} from 'react-native';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../store';
 import {CurrentStatus} from '../store/general/types';
 import {changeStatus, changeIllness} from '../store/general/actions';
 import {Colors} from '../styles';
-import {PollResponse, API, Illness, PollRequest} from '../services/api';
+import {
+  PollResponse,
+  API,
+  Illness,
+  PollRequest,
+  TimestampedCoordinate,
+} from '../services/api';
 import {box, BoxKeyPair} from 'tweetnacl';
 
 type MyProps = {};
@@ -32,7 +44,7 @@ class StatusComponent extends React.Component<Props, State> {
   triggerInfected() {
     this.props.changeStatus(CurrentStatus.Infected);
     this.props.changeIllness({
-      start_time: new Date(),
+      start_time: new Date().toISOString(),
       duration_days: 14,
     });
   }
@@ -55,17 +67,23 @@ class StatusComponent extends React.Component<Props, State> {
   triggerUpdate() {
     // here we need to do the following:
     const {locations, illness} = this.props;
-    // locations: array of type Locations like defined here: https://github.com/transistorsoft/react-native-background-geolocation/blob/d7ec0ea0ec8ced8fe896e132d51dbd055fe118aa/src/declarations/interfaces/Location.d.ts#L129
-    // illness: current state of illness
 
-    // * convert location to TimeStampCoordinates
-    // * convert illness type
+    // illness: current state of illness
+    const timestamped_coors = locations.map(l => ({
+      timestamp: l.timestamp,
+      x: l.coords.longitude,
+      y: l.coords.latitude,
+    }));
+
+    // console.log('INFO - TimestampedCoordinate: ' + timestamped_coors);
+    console.log('INFO - Number of Locations:' + timestamped_coors.length);
 
     const test = {
       user_id: 'lol',
-      illnesses: [] as any,
-      timestamped_coordinates: [] as any,
-    } as PollRequest;
+      illnesses: [illness!],
+      timestamped_coordinates: [timestamped_coors[0]],
+    };
+    console.log('INFO - Test Vector:' + JSON.stringify(test));
 
     const {api, shared_secret} = this.state;
     api!

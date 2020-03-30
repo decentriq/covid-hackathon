@@ -1,5 +1,4 @@
-import {Illness as BaseIllness} from '../../services/api';
-export interface Illness extends BaseIllness {}
+import {Illness} from '../../services/api';
 
 export type GeneralStore = {
   enclave_identity: any;

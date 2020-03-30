@@ -47,24 +47,24 @@ function bytesToBase64(bytes: Uint8Array) {
 }
 
 export interface Illness {
-  start_time: Date;
+  start_time: string;
   duration_days?: number;
 }
 
 export interface TimestampedCoordinate {
-  timestamp: Date;
+  timestamp: string;
   x: number;
   y: number;
 }
 
 export interface PollRequest {
   user_id: string;
-  illnesses: [Illness];
-  timestamped_coordinates: [TimestampedCoordinate];
+  illnesses: Array<Illness>;
+  timestamped_coordinates: Array<TimestampedCoordinate>;
 }
 
 export interface PollResponse {
-  exposed_timestamp?: Date;
+  exposed_timestamp?: string;
 }
 
 import {box, randomBytes} from 'tweetnacl';
