@@ -127,7 +127,7 @@ export class API {
 
   async poll(sharedSecret: Uint8Array, request: PollRequest): Promise<PollResponse> {
     let encrypted_data = encrypt(sharedSecret, request);
-    let buffer: ArrayBuffer = (await this.post("/poll", encrypted_data)).data;
+    let buffer: ArrayBuffer = (await this.post("/poll", encrypted_data, { "Content-Type": "application/octet-stream" }, "arraybuffer")).data;
     let decrypted_data: PollResponse = decrypt(sharedSecret, new Uint8Array(buffer));
     return decrypted_data;
   }
