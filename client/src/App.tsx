@@ -7,14 +7,13 @@ import {Provider} from 'react-redux';
 import logger from 'redux-logger';
 
 import {rootReducer} from './store';
-import nacl from "tweetnacl";
-import { randomBytes } from 'react-native-randombytes'
+import nacl from 'tweetnacl';
+import {randomBytes} from 'react-native-randombytes';
 
 nacl.setPRNG((x, n) => {
   let bytes = randomBytes(n);
   x.set(bytes);
-})
-
+});
 
 export const store = createStore(rootReducer, applyMiddleware(logger));
 

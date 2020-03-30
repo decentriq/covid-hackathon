@@ -10,8 +10,6 @@ import {
 import {StackNavigationProp} from '@react-navigation/stack';
 import {OnboardingIntroNavigatorParamList} from '../../navigations/onboarding-navigator';
 import {Colors} from '../../styles';
-import {API} from '../../services/api';
-import { box } from "tweetnacl";
 
 type IntroScreenNavigationProp = StackNavigationProp<
   OnboardingIntroNavigatorParamList,
@@ -23,24 +21,6 @@ type IntroProps = {
 };
 
 export const IntroScreen = ({navigation}: IntroProps) => {
-  // Testing
-  let keypair = box.keyPair();
-  let api = new API(keypair.publicKey);
-  api.getReport().then((val) => {
-    let enclave_key = val.slice(320, 320+32);
-    const sharedA = box.before(enclave_key, keypair.secretKey);
-    const test = {
-      user_id: "lol",
-      illnesses: [] as any,
-      timestamped_coordinates: [] as any,
-    };
-    api.poll(sharedA, test).then((val: any)=> {
-      console.log(val);
-    }).catch((err: any)=> {
-      console.log(err);
-    });
-  });
-
   navigation.setOptions({headerShown: false});
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -52,7 +32,10 @@ export const IntroScreen = ({navigation}: IntroProps) => {
             <Text style={styles.h2_underline}>right</Text>
           </View>
           <Text style={styles.header_paragraph}>
-            Confidential contact tracing: the app uses end-to-end encryption to communicate with a piece of code that provably only does what is required to compute whether you have been exposed to the virus, it does not leak any data.
+            Confidential contact tracing: the app uses end-to-end encryption to
+            communicate with a piece of code that provably only does what is
+            required to compute whether you have been exposed to the virus, it
+            does not leak any data.
           </Text>
         </View>
         <View style={styles.info_section}>

@@ -1,4 +1,4 @@
-import {Illness} from './types';
+import {Illness} from '../../services/api';
 
 import {
   CurrentStatus,
