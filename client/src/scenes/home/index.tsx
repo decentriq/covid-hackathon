@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, Text, Button} from 'react-native';
+import {SafeAreaView, Text, Button, ScrollView} from 'react-native';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {HomeNavigatorParamList} from '../../navigations/home-navigator';
 import BackgroundGeolocation, {
@@ -14,6 +14,7 @@ import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../store';
 import {addLocation, deleteLocations} from '../../store/traces/actions';
 import StatusComponent from '../../components/status';
+import LocaationComponent from '../../components/location';
 
 type StatusScreenNavigationProp = BottomTabNavigationProp<
   HomeNavigatorParamList,
@@ -47,11 +48,16 @@ class StatusScreenPrivate extends React.Component<StatusProps, StatusState> {
     console.log('Home mounted');
     BackgroundGeolocation.ready(
       {
-        distanceFilter: 10,
+        distanceFilter: 30,
         logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
         stopOnTerminate: false,
         startOnBoot: true,
         debug: false,
+        desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+        locationUpdateInterval: 60000,
+        fastestLocationUpdateInterval: 60000,
+        disableMotionActivityUpdates: true,
+        stopTimeout: 1,
       },
 
       state => {
@@ -77,9 +83,12 @@ class StatusScreenPrivate extends React.Component<StatusProps, StatusState> {
     const {counter, incrementClick} = this.props;
     return (
       <SafeAreaView>
-        <Text>Screen: Status</Text>
-        <StatusComponent />
-        {/* <Button onPress={() => incrementClick()} title="Increment Me!" /> */}
+        <ScrollView>
+          <Text>Screen: Status</Text>
+          <StatusComponent />
+          {/* <Button onPress={() => incrementClick()} title="Increment Me!" /> */}
+          <LocaationComponent />
+        </ScrollView>
       </SafeAreaView>
     );
   }
