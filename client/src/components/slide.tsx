@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     margin: 15,
   },
   footer: {
-    flex: 1,
+    flex: 2,
     alignSelf: 'stretch',
     shadowOpacity: 1.0,
     shadowOffset: {
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   section_image: {
     margin: 15,
     alignSelf: 'stretch',
-    flex: 4,
+    flex: 5,
   },
   section_image_container: {
     flex: 1,
