@@ -52,8 +52,7 @@ export const IntroScreen = ({navigation}: IntroProps) => {
             <Text style={styles.h2_underline}>right</Text>
           </View>
           <Text style={styles.header_paragraph}>
-            Text that keeps goinText that keeps goinText that keeps goinText
-            that keeps goinText that keeps goingggggText that keeps going
+            Confidential contact tracing: the app uses end-to-end encryption to communicate with a piece of code that provably only does what is required to compute whether you have been exposed to the virus, it does not leak any data.
           </Text>
         </View>
         <View style={styles.info_section}>
@@ -74,11 +73,11 @@ export const IntroScreen = ({navigation}: IntroProps) => {
           </TouchableHighlight>
         </View>
         <View style={styles.footer}>
-          <Text>Some more text</Text>
+          <Text>Requires location permission</Text>
           <TouchableHighlight
             underlayColor={Colors.DARK_ORANGE}
             style={styles.button}
-            onPress={() => navigation.navigate('Completed')}>
+            onPress={() => navigation.navigate('Home')}>
             <Text style={styles.buttonText}>Start Tracking</Text>
           </TouchableHighlight>
         </View>

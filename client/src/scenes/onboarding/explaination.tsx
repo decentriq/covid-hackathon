@@ -66,22 +66,22 @@ type ExplainationProps = {
 const SLIDES_CONTENT = {
   one: {
     imageSrc: require('../../assets/images/person.png'),
-    textTop: 'Some text top',
-    textBot: 'Some text bot',
+    textTop: 'Your data is important',
+    textBot: "To battle the spread of COVID-19 it is imperative that we stay informed about the spread of the infection, and whether we have been exposed to an infected person. To this end we need to have some form of access to one another's location data.",
     backgroundColorTop: Colors.EXTRA_LIGHT_BLUE,
     backgroundColorBot: Colors.LIGHT_ORANGE,
   },
   two: {
     lottieSrc: require('../../assets/lottie/lf20_aPomb3.json'),
-    textTop: 'Some text top',
-    textBot: 'Some text bot',
+    textTop: 'Your privacy is important',
+    textBot: 'However, exposing our location history to the government or unknown third parties has great potential for abuse. We must make sure that our commitment to end this disease does not compromise our right to privacy.',
     backgroundColorTop: Colors.EXTRA_LIGHT_BLUE,
     backgroundColorBot: Colors.LIGHT_ORANGE,
   },
   three: {
     lottieSrc: require('../../assets/lottie/lf20_E0YFed.json'),
-    textTop: 'Some text top',
-    textBot: 'Some text bot',
+    textTop: 'Tech to the rescue',
+    textBot: 'cocotrace uses a new technology called Trusted Execution Environments (Intel SGX) to hide our private data from literally everyone, while also allowing the necessary computations to take place. ',
     backgroundColorTop: Colors.EXTRA_LIGHT_BLUE,
     backgroundColorBot: Colors.LIGHT_ORANGE,
   },
