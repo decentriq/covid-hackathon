@@ -5,6 +5,7 @@ import {RootState} from '../store';
 import {CurrentStatus} from '../store/general/types';
 import {changeStatus, changeIllness} from '../store/general/actions';
 import {Colors} from '../styles';
+import { PollResponse } from '../services/api';
 
 type MyProps = {};
 type Props = PropsFromRedux & MyProps;
@@ -28,8 +29,20 @@ class StatusComponent extends React.Component<Props, State> {
 
   triggerUpdate() {
     // here we need to do the following:
+    const {locations, illness} = this.props; 
+    // locations: array of type Locations like defined here: https://github.com/transistorsoft/react-native-background-geolocation/blob/d7ec0ea0ec8ced8fe896e132d51dbd055fe118aa/src/declarations/interfaces/Location.d.ts#L129
+    // illness: current state of illness
+
     // * convert location to TimeStampCoordinates
-    // * send request to the
+    // * send request to the backend
+    
+    // example response
+    const response = {exposed_timestamp: new Date()} as PollResponse;
+
+    if (response.exposed_timestamp) {
+      this.props.changeStatus(CurrentStatus.Exposed); 
+    }
+
     // * if exposed is set then update exposed => call this funtion
   }
 
@@ -91,6 +104,7 @@ class StatusComponent extends React.Component<Props, State> {
 const mapState = (state: RootState) => ({
   locations: state.traces.locations,
   enclave_identity: state.general.enclave_identity,
+  illness: state.general.illness,
   status: state.general.current_status,
 });
 
