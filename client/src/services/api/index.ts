@@ -2,65 +2,65 @@ import * as axios from 'axios';
 import { TextEncoder, TextDecoder } from 'text-encoding-shim';
 
 const base64abc = (() => {
-	let abc = [],
-		A = "A".charCodeAt(0),
-		a = "a".charCodeAt(0),
-		n = "0".charCodeAt(0);
-	for (let i = 0; i < 26; ++i) {
-		abc.push(String.fromCharCode(A + i));
-	}
-	for (let i = 0; i < 26; ++i) {
-		abc.push(String.fromCharCode(a + i));
-	}
-	for (let i = 0; i < 10; ++i) {
-		abc.push(String.fromCharCode(n + i));
-	}
-	abc.push("+");
-	abc.push("/");
-	return abc;
+  let abc = [],
+    A = "A".charCodeAt(0),
+    a = "a".charCodeAt(0),
+    n = "0".charCodeAt(0);
+  for (let i = 0; i < 26; ++i) {
+    abc.push(String.fromCharCode(A + i));
+  }
+  for (let i = 0; i < 26; ++i) {
+    abc.push(String.fromCharCode(a + i));
+  }
+  for (let i = 0; i < 10; ++i) {
+    abc.push(String.fromCharCode(n + i));
+  }
+  abc.push("+");
+  abc.push("/");
+  return abc;
 })();
 
 function bytesToBase64(bytes: Uint8Array) {
-	let result = '', i, l = bytes.length;
-	for (i = 2; i < l; i += 3) {
-		result += base64abc[bytes[i - 2] >> 2];
-		result += base64abc[((bytes[i - 2] & 0x03) << 4) | (bytes[i - 1] >> 4)];
-		result += base64abc[((bytes[i - 1] & 0x0F) << 2) | (bytes[i] >> 6)];
-		result += base64abc[bytes[i] & 0x3F];
-	}
-	if (i === l + 1) { // 1 octet missing
-		result += base64abc[bytes[i - 2] >> 2];
-		result += base64abc[(bytes[i - 2] & 0x03) << 4];
-		result += "==";
-	}
-	if (i === l) { // 2 octets missing
-		result += base64abc[bytes[i - 2] >> 2];
-		result += base64abc[((bytes[i - 2] & 0x03) << 4) | (bytes[i - 1] >> 4)];
-		result += base64abc[(bytes[i - 1] & 0x0F) << 2];
-		result += "=";
-	}
-	return result;
+  let result = '', i, l = bytes.length;
+  for (i = 2; i < l; i += 3) {
+    result += base64abc[bytes[i - 2] >> 2];
+    result += base64abc[((bytes[i - 2] & 0x03) << 4) | (bytes[i - 1] >> 4)];
+    result += base64abc[((bytes[i - 1] & 0x0F) << 2) | (bytes[i] >> 6)];
+    result += base64abc[bytes[i] & 0x3F];
+  }
+  if (i === l + 1) { // 1 octet missing
+    result += base64abc[bytes[i - 2] >> 2];
+    result += base64abc[(bytes[i - 2] & 0x03) << 4];
+    result += "==";
+  }
+  if (i === l) { // 2 octets missing
+    result += base64abc[bytes[i - 2] >> 2];
+    result += base64abc[((bytes[i - 2] & 0x03) << 4) | (bytes[i - 1] >> 4)];
+    result += base64abc[(bytes[i - 1] & 0x0F) << 2];
+    result += "=";
+  }
+  return result;
 }
 
-interface Illness {
-    start_time: Date,
-    duration_days?: number 
+export interface Illness {
+  start_time: Date,
+  duration_days?: number 
 }
 
-interface TimestampedCoordinate {
-    timestamp: Date,
-    x: number,
-    y: number,
+export interface TimestampedCoordinate {
+  timestamp: Date,
+  x: number,
+  y: number,
 }
 
-interface PollRequest {
-    user_id: string,
-    illnesses: [Illness],
-    timestamped_coordinates: [TimestampedCoordinate],
+export interface PollRequest {
+  user_id: string,
+  illnesses: [Illness],
+  timestamped_coordinates: [TimestampedCoordinate],
 }
 
-interface PollResponse {
-    exposed_timestamp?: Date,
+export interface PollResponse {
+  exposed_timestamp?: Date,
 }
 
 import { box, randomBytes } from 'tweetnacl';
@@ -115,7 +115,21 @@ export class API {
   constructor(clientKey: Uint8Array) {
     this.session = axios.default.create({
       headers: {ClientPubKey: bytesToBase64(clientKey)},
+      baseURL: "http://localhost:3000/",
+      responseType: "arraybuffer",
     });
+  }
+
+  async getReport(): Promise<Uint8Array> {
+    let buffer: ArrayBuffer = (await this.get("/report")).data;
+    return new Uint8Array(buffer);
+  }
+
+  async poll(sharedSecret: Uint8Array, request: PollRequest): Promise<PollResponse> {
+    let encrypted_data = encrypt(sharedSecret, request);
+    let buffer: ArrayBuffer = (await this.post("/poll", encrypted_data)).data;
+    let decrypted_data: PollResponse = decrypt(sharedSecret, new Uint8Array(buffer));
+    return decrypted_data;
   }
 
   private async post(
