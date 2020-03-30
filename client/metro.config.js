@@ -5,6 +5,8 @@
  * @format
  */
 
+const path = require('path')
+
 module.exports = {
   transformer: {
     getTransformOptions: async () => ({
@@ -13,5 +15,10 @@ module.exports = {
         inlineRequires: false,
       },
     }),
+  },
+  resolver: {
+    extraNodeModules: {
+      crypto: path.resolve(__dirname, 'extra_modules/crypto')
+    },
   },
 };

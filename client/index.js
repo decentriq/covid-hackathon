@@ -7,6 +7,8 @@ import {addLocation, deleteLocations} from './src/store/traces/actions';
 import {RootState} from './src/store';
 import {store} from './src/App'
 
+global.crypto = require('crypto');
+
 BackgroundGeolocation.onLocation(
     (location) => {
         store.dispatch(addLocation(location))

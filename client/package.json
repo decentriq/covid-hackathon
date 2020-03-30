@@ -24,7 +24,9 @@
     "react-native": "0.61.5",
     "react-native-background-fetch": "^3.0.4",
     "react-native-background-geolocation": "^3.4.2",
+    "react-native-crypto": "^2.2.0",
     "react-native-gesture-handler": "^1.6.1",
+    "react-native-randombytes": "^3.5.3",
     "react-native-reanimated": "^1.7.1",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.4.0",
@@ -33,9 +35,9 @@
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-axios-middleware": "^4.0.1",
+    "redux-logger": "^3.0.6",
     "text-encoding-shim": "^1.0.5",
-    "tweetnacl": "^1.0.3",
-    "redux-logger": "^3.0.6"
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

@@ -74,7 +74,7 @@ function encrypt(
   key?: Uint8Array
 ): Uint8Array {
   const nonce = newNonce();
-  const messageUint8 = new TextEncoder("utf-8").encode(json);
+  const messageUint8 = new TextEncoder("utf-8").encode(JSON.stringify(json));
   const encrypted = key
     ? box(messageUint8, nonce, key, secretOrSharedKey)
     : box.after(messageUint8, nonce, secretOrSharedKey);
