@@ -1,4 +1,4 @@
-# cocotrace | confidential contact tracing
+# 🥥 cocotrace | Confidential Contact Tracing
 
 This is the repo for the *cocotrace* project in the CodeVsCovid19 Hackathon. 
 
@@ -8,11 +8,33 @@ https://www.codevscovid19.org
 
 Most members of this team are from [decentriq](https://www.decentriq.ch).
 
+## The Problem
 
-## Inspiration
-At decentriq we work with privacy preserving technologies. We learned that contact tracing based on smartphone data (GPS, proximity data, etc) has huge potential for fighting the current pandemic. It has been successfully deployed in countries such as South Korea, but is facing resistance in many European countries due to legitimate privacy concerns of such data collections.
+Contact tracing has helped drastically flatten the curve in countries such as South Korea. However, tracing requires tracking people's movements. This raises legitimate privacy concerns.
 
-We will build a system that allows gathering smartphone data for contact tracing, while provably keeping all sensitive data confidential from peers and any central authority. We hope that such a system will help the fight against the Corona virus without the need for any privacy compromises.
+## The Solution
+
+At decentriq ([www.decentriq.ch](http://www.decentriq.ch/)) we work with privacy preserving technologies. We believe that you can have both, contact tracing and data privacy.
+
+We've built a confidential contact tracing system, including an iOS app and a confidential computing server.
+
+Intel SGX technology allows the server to prove its program logic to the app before the app sends data to the server. In particular the server can prove that it cannot leak the user's data.
+
+## 🥥 cocotrace | Confidential Contact Tracing
+
+The cocotrace system uses a central confidential computing server. The server proves its identity to the apps in the form of a signed hash of its code. Additionally, it prevents memory-attacks through memory encryption and isolation.
+
+cocotrace minimizes the privacy risk through provable data confidentiality.
+
+For the server we use Rust and an SGX-embedded webserver depoyed on an Azure Confidential Compute instance. The app was built in react-native.
+
+### Screenshots
+
+![cocotrace Screenshots](docs/Screenshots.png)
+
+## Traditional Systems
+
+Contact tracing systems which are currently in use come with privacy problems. In central approaches all data could potentially be accessed by the authorities. In "edge approaches" infected people's data are exposed. Israel's Hamagen system is such a case, for a detailed comparison see "Comparison with Hamagen" below.
 
 ### Comparison to Hamagen
 
@@ -25,8 +47,45 @@ In terms of privacy, the *cocotrace* system is superior to Hamagen as *cocotrace
 
 In *cocotrace* there is nothing preventing people from letting the system know that they have been infected. This improved privacy should bring more users to the system and improve the crucial contact tracing success rate. 
 
-## Tech
-We will build a GPS collecting app using react-native and a central server built in Rust leveraging the Intel SGX confidential computing technology to gather the data in a privacy-preserving way.
+
+## 🛠️ Build and install
+
+
+### Backend
+
+TBD
+
+### Mobile App
+Currently MacOS as a build machine and iOS as a target is supported. Linux/Windows as well as Android is currently not supported.
+
+#### Requirements
+
+- `node.js`
+- `yarn`
+- `cocoapods`
+- `Xcode` (only for iOS)
+
+#### iOS
+
+- Install dependencies
+
+    ```
+    yarn
+    cd ios && pod install && cd ..
+    ```   
+
+- Start React Native server 
+
+    ```
+    yarn run ios
+    ```
+
+#### Android
+
+TBD
+
+## Security
+cocotrace is currently considered prototype software. Do not deploy it in production, or trust it with sensitive data.
 
 ## License
 
