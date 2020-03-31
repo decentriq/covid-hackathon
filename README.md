@@ -53,7 +53,57 @@ In *cocotrace* there is nothing preventing people from letting the system know t
 
 ### Backend
 
-TBD
+#### Requirements
+
+- Linux
+- SGX-capable and SGX-enabled machine (see BIOS settings for enabling it)
+- nix
+- Docker or NixOS
+
+#### Install SGX driver and aesmd
+
+##### NixOS
+If for some reason you're running NixOS, first off, high-five! Second, there's an SGX module in `nix/modules/intel.nix`, and a systemd daemon in `nix/packages/intel-aesmd`. To install add the following to your configuration:
+```
+  imports = [
+    path/to/nix/modules/intel.nix
+  ]
+  (...)
+  hardware.cpu.intel.sgx.enable = true;
+  hardware.cpu.intel.aesmd.enable = true;
+  hardware.cpu.intel.aesmd.package = callPackage path/to/nix/packages/intel-aesmd/2.7.0.nix {};
+  (...)
+```
+
+Then rebuild your config.
+
+##### Other Linux OS
+
+The driver must be built from source:
+```
+git clone git@github.com:intel/linux-sgx-driver.git
+cd linux-sgx-driver
+git checkout sgx2   # Important
+sudo make install   # Need root because it's a kernel module
+sudo modprobe isgx  # Load module (taints kernel)
+lsmod | grep isgx   # Double check it's running
+dmesg | tail        # Check kernel logs if something's off, most probably SGX isn't enabled in BIOS
+```
+
+The aesmd daemon must be running:
+```
+docker run --detach --restart always --device /dev/isgx --volume /var/run/aesmd:/var/run/aesmd --name aesmd fortanix/aesmd:2.7.101.3
+```
+Note that `/dev/isgx` is forwarded, which is only present if the driver loaded successfully.
+
+#### Build and run enclave
+```
+./nix-shell
+cd backend
+cargo run # Builds enclave and uses ftxsgx-runner-cargo to load it
+```
+
+The enclave will bind `[::]:3000`
 
 ### Mobile App
 Currently MacOS as a build machine and iOS as a target is supported. Linux/Windows as well as Android is currently not supported.

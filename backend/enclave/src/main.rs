@@ -378,7 +378,6 @@ fn main() {
 
 fn create_report(keypair: &Keypair) -> Report {
     let target_info = Targetinfo::default();
-    warn!("TODO create_report fill report_data");
     let mut report_data: [u8; 64] = [0; 64];
     let public_key_bytes = keypair.public.as_bytes();
     &report_data[..public_key_bytes.len()].copy_from_slice(public_key_bytes);
