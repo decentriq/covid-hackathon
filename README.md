@@ -142,7 +142,7 @@ The main pieces missing for production use are full remote attestation and a pro
 ### Remote attestation
 Remote attestation is the process of establishing trust in a running instance of an enclave. During loading of an enclave the SGX-capable CPU will hash the binary, and will later on sign this hash using a CPU-specific key. This signature must be later sent to Intel which will verify the signature and provide their own signature, which the end user application can check.
 
-Currently this project does **not** do this roundtrip to Intel, the CPU-signed datastructure is returned directly to the user app. This is due to time constraints, as well as the fact that the roundtrip to Intel requires an auth token.
+Currently this project does **not** do this roundtrip to Intel, the CPU-signed datastructure is returned directly to the user app. Obviously the client app cannot directly authenticate the CPU, so this is not secure. The reason we omitted the full roundtrip is due to time constraints, as well as the fact that the roundtrip to Intel requires an auth token.
 
 ### DEBUG enclave
 Furthermore, the enclave is currently loaded in a DEBUG-mode, which allows a debugger to attach to the enclave, allowing it to read enclave memory. Disabling DEBUG-mode requires a production signature over the enclave's hash, from a key that's specifically whitelisted by Intel. Again, due to time constraints as well as not wanting to sign a non-production-ready enclave, we have omitted this for the sake of the hackathon.
