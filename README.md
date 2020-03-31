@@ -27,3 +27,11 @@ In *cocotrace* there is nothing preventing people from letting the system know t
 
 ## Tech
 We will build a GPS collecting app using react-native and a central server built in Rust leveraging the Intel SGX confidential computing technology to gather the data in a privacy-preserving way.
+
+## License
+
+Rust is primarily distributed under the terms of both the MIT license
+and the Apache License (Version 2.0), with portions covered by various
+BSD-like licenses.
+
+See [LICENSE-APACHE](LICENSE-APACHE) and [LICENSE-MIT](LICENSE-MIT) for details.
